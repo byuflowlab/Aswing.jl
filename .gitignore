@@ -1,0 +1,14 @@
+deps/src/aswing/src/mods.txt
+*.ftnchek
+*.mod
+*.INC
+*.o
+*.so
+test/outputs/*
+*.f
+Manifest.toml
+deps/build.log
+deps/deps.jl
+deps/downloads
+deps/usr
+deps/src/ARPACK
