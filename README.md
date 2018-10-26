@@ -1,6 +1,6 @@
 # Aswing.jl
 
-Julia wrapper for the ASWING program (A licensed copy of ASWING must be obtained separately). 
+Julia wrapper for the ASWING (A licensed copy of ASWING must be obtained separately). 
 
 ## Installation
 
