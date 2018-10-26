@@ -1,8 +1,10 @@
 # Aswing.jl
 
-This package is a Julia wrapper to the ASWING program, originally developed to allow the use of gradient based optimization using ASWING.  In order to use this package, a licensed copy of ASWING must be obtained separately. As ASWING is designed to be a standalone program, several modifications must be made to the original program to allow direct interaction with the program through Julia.
+Julia wrapper for the ASWING program (A licensed copy of ASWING must be obtained separately). 
 
 ## Installation
+
+As ASWING is designed to be a standalone program, several modifications must be made to the original program to allow direct interaction with the program through Julia (and to prevent it from launching GUIs).  This section will guide you through the installation process.
 
 Start by checking out this package for development:
 ```
