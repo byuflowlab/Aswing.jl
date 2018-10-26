@@ -1,14 +1,21 @@
-deps/src/aswing/src/mods.txt
+# aswing source code
+*.f
+*.INC
 *.ftnchek
 *.mod
-*.INC
+deps/src/aswing/src/mods.txt
+# fortran compiled files
 *.o
 *.so
-test/outputs/*
-*.f
+# aswing files
+*.asw
+*.pnt
+*.set
+# julia files
 Manifest.toml
+# build process files
 deps/build.log
 deps/deps.jl
 deps/downloads
-deps/usr
 deps/src/ARPACK
+deps/usr
