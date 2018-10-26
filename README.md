@@ -2,10 +2,15 @@
 
 This package is a Julia wrapper to the ASWING program, originally developed to allow the use of gradient based optimization using ASWING.  In order to use this package, a licensed copy of ASWING must be obtained separately. As ASWING is designed to be a standalone program, several modifications must be made to the original program to allow direct interaction with the program through Julia.
 
-
 ## Installation
 
-First copy the contents ASWING's src directory into Aswing.jl's deps/src/aswing/src directory.  Plotting packages are not used by this wrapper and need not be copied over.
+Start by checking out this package for development:
+```
+(v1.0) pkg> dev https://github.com/byuflowlab/Aswing.jl
+```
+Julia will automatically try (and fail) to build the package. This is ok, because we weren't ready to build the package anyway.
+
+Then copy the contents of ASWING's src directory into the ~/.julia/dev/Aswing/deps/src/aswing/src directory.  Plotting packages are not used by this wrapper and do not need to be copied over.
 
 Then make the following necessary changes to the source code:
 
@@ -134,13 +139,29 @@ You may also want to remove (or comment out) a number of `WRITE` statements from
    * oper.f: 54; 128; 184-185; 263-264; 548-549; 601; 600-607; 712-714; 819-820; 852-893; 1391-1392
    * update.f: 370-384
  
-After performing the changes in the above sections, rebuild the package to automatically build a shared library that Julia can call.
+After performing the changes listed above, build the package to automatically build a shared library that Julia can call.
+```
+(v1.0) pkg> build Aswing
+```
+
+You are now ready to use the Aswing.jl package.
 
 Note that if you wish to change the file DIMEN.INC to increase FORTRAN array limits, the file dimenglobals.jl must also be modified and the package must be rebuilt.
 
+## Rebuilding
+
+To rebuild, first delete the shared library that we created in ~/.julia/dev/Aswing/deps/usr/lib directory.  Then rebuild the package to automatically regenerate the shared library.
+```
+(v1.0) pkg> build Aswing
+```
+
+## Testing
+
+In order to test that the package works, the hawk.asw and hawk.pnt example configuration files (found in the `runs` folder of the original Aswing package folder) must be copied to the test directory.
+
 ## Usage
 
-Example usage can be found in the example directory and an attempt has been made to document all pertinent functions.  Access to FORTRAN global variables can be obtained through the ASWING global struct. Use of this package is easiest if the user has experience using ASWING as a standalone package and understands the necessary workflow in ASWING to analyze flexible aircraft.  
+Example usage can be found in the example directory.  Most functions are documented in the source code. Access to FORTRAN global variables can be obtained through the ASWING global struct. Use of this package is easiest if the user has experience using ASWING as a standalone package and understands the necessary workflow in ASWING to analyze flexible aircraft.  
 
 ## Capabilities
 
