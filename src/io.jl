@@ -7,18 +7,23 @@
 function aswsav(file)
     # split filepath and filename
     filepath, filename = splitdir(file)
-    # create path to file
-    if !isempty(filepath) && !isfile(filepath)
-        mkpath(filepath)
+
+    # create path to file and change working directory
+    wd = pwd()
+    if !isempty(filepath)
+        if !isfile(filepath)
+            mkpath(filepath)
+        end
+        cd(filepath)
     end
+
     # add .asw extension if not already present
     if length(filename) <= 4 || filename[end-3:end] != ".asw"
         filename *= ".asw"
     end
     # write file
-    wd = pwd()
-    cd(filepath)
     ccall((:outputjl_,libaswing), Nothing,(Ptr{Cchar},Ref{Int32}),filename,length(filename))
+    # change back to working directory
     cd(wd)
     return nothing
 end
@@ -30,19 +35,22 @@ end
 function pntsav(file::String, ipnt1=1, ipnt2=ASWING.NPOINT)
     # split filepath and filename
     filepath, filename = splitdir(file)
-    # create path to file
-    if !isempty(filepath) && !isfile(filepath)
-        mkpath(filepath)
+    # create path to file and change working directory
+    wd = pwd()
+    if !isempty(filepath)
+        if !isfile(filepath)
+            mkpath(filepath)
+        end
+        cd(filepath)
     end
     # add .pnt extension if not already present
     if length(filename) <= 4 || filename[end-3:end] != ".pnt"
         filename *= ".pnt"
     end
     # write file
-    wd = pwd()
-    cd(filepath)
     ccall((:pntsavjl_, libaswing), Nothing, (Ptr{Cchar}, Ref{Int32}, Ref{Int32},
         Ref{Int32}), filename, length(filename), ipnt1, ipnt2)
+    # change back to working directory
     cd(wd)
     return nothing
 end
@@ -54,18 +62,21 @@ end
 function setsav(file)
     # split filepath and filename
     filepath, filename = splitdir(file)
-    # create path to file
-    if !isempty(filepath) && !isfile(filepath)
-        mkpath(filepath)
+    # create path to file and change working directory
+    wd = pwd()
+    if !isempty(filepath)
+        if !isfile(filepath)
+            mkpath(filepath)
+        end
+        cd(filepath)
     end
     # add .set extension if not already present
     if length(filename) <= 4 || filename[end-4:end] != ".set"
         filename *= ".set"
     end
     # write file
-    wd = pwd()
-    cd(filepath)
     ccall((:setsavjl_,libaswing), Nothing,(Ptr{Cchar},Ref{Int32}),filename,length(filename))
+    # change back to working directory
     cd(wd)
     return nothing
 end
