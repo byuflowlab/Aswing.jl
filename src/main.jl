@@ -597,24 +597,14 @@ end
 function getstaticmargin(ipnt::Integer=1)
     # no convergence failures yet
     fail = false
-
+    # Switch to anchored constraints
+    setcons(aswconstraints("anchored"))
     # Get quasi-steady solution
-    solution = solvesteady(ipnt)
-
+    solution = solvesteady(1)
     # check if convergence failed
     if solution.converged == false
         fail = true
     end
-
-    # Retain parameters
-    retainparam(ipnt)
-
-    # Switch to anchored constraints
-    setcons(aswconstraints("anchored"))
-
-    # Get quasi-steady solution
-    solution = solvesteady(ipnt)
-
     # check if convergence failed
     if solution.converged == false
         fail = true
