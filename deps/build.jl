@@ -13,11 +13,19 @@ aswingbin = joinpath(srcdir,"aswing","bin")
 arpackdir = joinpath(srcdir,"ARPACK")
 arpacklib = joinpath(arpackdir,"libarpack_aswing.a")
 
+# get suffix
+suffix = Sys.isapple() ? "dylib" : "so"
+
 # create necessary paths
 for path in [libdir,downloaddir,arpackdir]
   if !isfile(path)
     mkpath(path)
   end
+end
+
+# check if library exists and delete if necessary
+if isfile(joinpath(libdir,"libaswing.$suffix"))
+    rm(joinpath(libdir,"libaswing.$suffix"))
 end
 
 arpackbuildvars = [
@@ -29,8 +37,6 @@ arpackbuildvars = [
   "PRECISIONS=complex16",
 ]
 
-# get suffix
-suffix = Sys.isapple() ? "dylib" : "so"
 
 aswingbuildvars = [
   "INSTALL_DIR=$libdir",
@@ -53,5 +59,7 @@ provides(SimpleBuild,
     `make $aswingbuildvars`
     `make install $aswingbuildvars`
   end),libaswing, os = :Unix)
+
+
 
 @BinDeps.install Dict(:libaswing => :libaswing)
