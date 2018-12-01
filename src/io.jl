@@ -320,7 +320,7 @@ function readasw(filename::String)
                     end
                     for i = 2:length(bvar)
                         if ~haskey(beamvarval, bvar[i])
-                            warn("Variable ", bvar[i] , " is not a valid variable", )
+                            @warn("Variable ", bvar[i] , " is not a valid variable", )
                         end
                     end
                     nvalue = length(split(str))
