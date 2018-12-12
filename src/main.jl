@@ -372,7 +372,7 @@ end
 """
 function setgust(igust::Integer, params::AbstractArray{<:Real}=[-4.0,0.0,1.0,8.0,2.0,0.0])
     gustparam = [-4.0,0.0,1.0,8.0,2.0,0.0]
-    if length(gustparameters) > 6
+    if length(gustparam) > 6
         error("No more than six gust parameters may be specified")
     end
     gustparam[1:length(params)] = params
@@ -457,7 +457,7 @@ end
     conclr()
     Clears all control laws
 """
-function conclr_asw()
+function conclr()
     ASWING.CONLAW[1] = false
     ASWING.CONSET[1] = false
     ASWING.LDCON[:] .= false
@@ -473,7 +473,7 @@ end
     conadd(i,j,ls,gfac,c)
     Sets up a proportional control law
 """
-function conadd_asw(i,j,ls,gfac,c)
+function conadd(i,j,ls,gfac,c)
 
     ASWING.CONLAW[1] = true
     if ls <= 0
