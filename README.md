@@ -190,5 +190,5 @@ The following capabilities have not been wrapped:
 
 ## Disclaimer
 
-This wrapper was developed for ASWING v 6.00.  Only OSX and Linux build processes are implemented.  There are no guarantees that this code will work with other versions and/or setups, in reality there are no guarantees that any of it will work at all, but I have used this wrapper in my research very successfully without issues.
+This wrapper was developed for ASWING v6.00.  Only OSX and Linux build processes are implemented.  There are no guarantees that this code will work with other versions and/or setups, in reality there are no guarantees that any of it will work at all, but I have used this wrapper in my research successfully without issues and have tested it against the unmodified ASWING program.
 
