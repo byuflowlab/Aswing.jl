@@ -161,7 +161,7 @@ Note that if you wish to change the file DIMEN.INC to increase FORTRAN array lim
 
 ## Rebuilding
 
-To rebuild, first delete the shared library that we created in ~/.julia/dev/Aswing/deps/usr/lib directory.  Then rebuild the package to automatically regenerate the shared library.
+Rebuilding the package will automatically regenerate the shared library.
 ```
 (v1.0) pkg> build Aswing
 ```
