@@ -131,6 +131,15 @@ Then make the following necessary changes to the source code:
            SUBROUTINE OPER(COMAND, COMARG, DELTAT, NTIMES)
      ```
    
+ * In setup.f:
+   * Fix bug in subroutine `GLLCLR` (iosubs.f: line 1867) by adding
+     ```
+           LADT(1) = 0
+           LADT(2) = 0
+           LADT(3) = 0
+     ```
+     to the subroutine.
+   
 You may also want to remove (or comment out) a number of `WRITE` statements from the original code to prevent ASWING from printing a plethora of information.  These include, but are not limited to the following lines in the original source code:
 
    * cexec.f: 483; 524; 570; 688; 769-771; 843-844; 1046-1068; 1081-1084
