@@ -132,7 +132,7 @@ Then make the following necessary changes to the source code:
      ```
    
  * In setup.f:
-   * Fix bug in subroutine `GLLCLR` (iosubs.f: line 1867) by adding
+   * Fix bug in subroutine `GLLCLR` (setup.f: line 1867) by adding
      ```
            LADT(1) = 0
            LADT(2) = 0
