@@ -326,9 +326,14 @@ solvesteady(ipnt1::Integer; repeat::Integer=0) = solvesteady(ipnt1, ipnt1, repea
     solveunsteady(deltat::Real, ntimes::Integer)
     Unsteady ASWING time-domain solve
 """
-function solveunsteady(deltat::Real, ntimes::Integer)
+function solveunsteady(deltat::Real, ntimes::Integer, ipnt::Integer=1)
+    # set operating point
+    ccall((:oper_, libaswing), Nothing,
+        (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
+        rpad("$ipnt",4), rpad("",80), 0.0, 0)
     # change to unsteady
     ASWING.STEADY[1] = false
+    # solve unsteady
     ccall((:oper_, libaswing), Nothing,
         (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
         rpad("X",4), rpad("",80), deltat, ntimes)
@@ -477,19 +482,19 @@ function conadd(i,j,ls,gfac,c)
 
     ASWING.CONLAW[1] = true
     if ls <= 0
-        CONLAW.NUPAR1[i,j] = 1
-        CONLAW.NUPAR2[i,j] = 1
+        CONLAW.NUPAR1[i,j] = 2
+        CONLAW.NUPAR2[i,j] = 2
         CONLAW.UPAR1[i,j,1:2] .= 0.0
         CONLAW.UPAR2[i,j,1:2] .= 0.0
         CONLAW.CU[i,j,1:2,1:2] .= c*gfac
         ASWING.LDCON[i] = true
         ASWING.LUCON[i] = true
     else
-        CONLAW.NQPAR1[i,j,ls] = 1
-        CONLAW.NQPAR2[i,j,ls] = 1
+        CONLAW.NQPAR1[i,j,ls] = 2
+        CONLAW.NQPAR2[i,j,ls] = 2
         CONLAW.QPAR1[i,j,ls,1:2] .= 0.0
         CONLAW.QPAR2[i,j,ls,1:2] .= 0.0
-        CONLAW.CQ[i,j,ls,1:2,1:2] = c*gfac
+        CONLAW.CQ[i,j,ls,1:2,1:2] .= c*gfac
         ASWING.LDCON[i] = true
         ASWING.LQCON[j,ls] = true
     end
