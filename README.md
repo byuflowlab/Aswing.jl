@@ -131,6 +131,15 @@ Then make the following necessary changes to the source code:
            SUBROUTINE OPER(COMAND, COMARG, DELTAT, NTIMES)
      ```
    
+ * In setup.f:
+   * Fix bug in subroutine `GLLCLR` (setup.f: line 1867) by adding
+     ```
+           LADT(1) = 0
+           LADT(2) = 0
+           LADT(3) = 0
+     ```
+     to the subroutine.
+   
 You may also want to remove (or comment out) a number of `WRITE` statements from the original code to prevent ASWING from printing a plethora of information.  These include, but are not limited to the following lines in the original source code:
 
    * cexec.f: 483; 524; 570; 688; 769-771; 843-844; 1046-1068; 1081-1084
@@ -152,7 +161,7 @@ Note that if you wish to change the file DIMEN.INC to increase FORTRAN array lim
 
 ## Rebuilding
 
-To rebuild, first delete the shared library that we created in ~/.julia/dev/Aswing/deps/usr/lib directory.  Then rebuild the package to automatically regenerate the shared library.
+Rebuilding the package will automatically regenerate the shared library.
 ```
 (v1.0) pkg> build Aswing
 ```
@@ -181,5 +190,5 @@ The following capabilities have not been wrapped:
 
 ## Disclaimer
 
-This wrapper was developed for ASWING v 6.00.  Only OSX and Linux build processes are implemented.  There are no guarantees that this code will work with other versions and/or setups, in reality there are no guarantees that any of it will work at all, but I have used this wrapper in my research very successfully without issues.
+This wrapper was developed for ASWING v6.00.  Only OSX and Linux build processes are implemented.  There are no guarantees that this code will work with other versions and/or setups, in reality there are no guarantees that any of it will work at all, but I have used this wrapper in my research successfully without issues and have tested it against the unmodified ASWING program.
 
