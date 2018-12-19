@@ -219,9 +219,9 @@ struct solution
 end
 
 # converts ASWING output arrays to solution struct
-function getsolution()
+function getsolution(ipnt1::Integer, ipnt2::Integer)
     sol = Array{solution,1}(undef, ASWING.NPOINT[1])
-    for ipnt = 1:ASWING.NPOINT[1]
+    for ipnt = ipnt1:ipnt2
         # Process converged boolean
         converged = ASWING.LCONV[ipnt]
         # Process operating point parameters
