@@ -317,7 +317,7 @@ function solvesteady(ipnt1::Integer, ipnt2::Integer; repeat::Integer=0)
         end
     end
     # return formatted solution
-    return getsolution()
+    return getsolution(ipnt1,ipnt2)
 end
 solvesteady(; repeat::Integer=0) = solvesteady(1, ASWING.NPOINT[1], repeat=repeat)
 solvesteady(ipnt1::Integer; repeat::Integer=0) = solvesteady(ipnt1, ipnt1, repeat=repeat)[ipnt1]
@@ -338,7 +338,7 @@ function solveunsteady(deltat::Real, ntimes::Integer, ipnt::Integer=1)
         (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
         rpad("X",4), rpad("",80), deltat, ntimes)
     # return formatted solution
-    return getsolution()
+    return getsolution(1, 1+ntimes)
 end
 
 """
