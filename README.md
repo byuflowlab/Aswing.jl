@@ -96,6 +96,10 @@ Then make the following necessary changes to the source code:
      ```
 
  * In oper.f:
+   * Add the following line at the end of the unsteady solution loop to prevent Aswing from solving additional time steps upon solution failure during an unsteady simulation (oper.f: line 822) 
+     ```
+           IF(.NOT.LCONV(IPOINT)) EXIT
+     ```
    * Delete the lines which prompt for DELTAT and NTIMES (oper.f: line 712-716)
      ```
              WRITE(*,2052) DELTAT, NTIMES
