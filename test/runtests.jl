@@ -146,7 +146,7 @@ stabderivs = Aswing.getstabderivs()
 end
 
 sm, fail = Aswing.getstaticmargin(1)
-@test isapprox(sm, 26.28,atol=1e-2)
+@test isapprox(sm, 25.66, atol=1e-2)
 
 # test unsteady solution
 Aswing.retainparam()
@@ -154,18 +154,18 @@ constraints_unsteady = Aswing.aswconstraints("free")
 Aswing.setcons(constraints_unsteady)
 unsteady_solution = Aswing.solveunsteady(0.1, 10)
 @test round(unsteady_solution[11].pnt_param.lift_force/
-         unsteady_solution[11].pnt_param.drag_force, digits = 2) == 33.65
+         unsteady_solution[11].pnt_param.drag_force, digits = 2) == 33.86
 
 # test eigenvalues
 asweigs = Aswing.geteigs(16, -0.1+0.0im, 1)
 @test length(asweigs) == 7
-@test round(asweigs[1], digits = 3) == -0.026+0.0im
-@test round(asweigs[2], digits = 3) == -0.017+0.425im
-@test round(asweigs[3], digits = 3) == -0.528+1.526im
-@test round(asweigs[4], digits = 3) == -7.050+0.0im
-@test round(asweigs[5], digits = 3) == -3.816+6.279im
-@test round(asweigs[6], digits = 3) == -8.730+8.586im
-@test round(asweigs[7], digits = 3) == -11.747+7.345im
+@test round(asweigs[1], digits = 3) == -0.019+0.0im
+@test round(asweigs[2], digits = 3) == -0.02+0.316im
+@test round(asweigs[3], digits = 3) == -0.512+1.52im
+@test round(asweigs[4], digits = 3) == -6.873+0.0im
+@test round(asweigs[5], digits = 3) == -3.815+6.314im
+@test round(asweigs[6], digits = 3) == -8.773+8.553im
+@test round(asweigs[7], digits = 3) == -11.774+7.353im
 
 # test setting new paneling
 newintervals = [Aswing.getintervals(i) for i  in 1:4]*2
@@ -175,4 +175,4 @@ Aswing.nodeset(newintervals)
 # make sure solution remains relatively constant
 steady_solution = Aswing.solvesteady(1)
 @test round(steady_solution.pnt_param.lift_force/
-      steady_solution.pnt_param.drag_force, digits = 1) == 33.7
+      steady_solution.pnt_param.drag_force, digits = 1) == 33.8

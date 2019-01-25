@@ -338,7 +338,7 @@ function solveunsteady(deltat::Real, ntimes::Integer, ipnt::Integer=1)
         (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
         rpad("X",4), rpad("",80), deltat, ntimes)
     # return formatted solution
-    return getsolution(1, 1+ntimes)
+    return getsolution(1, ASWING.NPOINT[1])
 end
 
 """
