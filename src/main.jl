@@ -156,7 +156,7 @@ function setgeom(asw::aswgeominput)
     nbeam = length(asw.beams)
     ASWING.NBEAM[1] = nbeam
     for ibeam = 1:nbeam
-        ASWING.BNAME[ibeam][:] = Vector{Char}(rpad(asw.beams[nbeam].name, 64))
+        ASWING.BNAME[ibeam][:] = Vector{Char}(rpad(asw.beams[ibeam].name, 64))
         ASWING.KBNUM[ibeam] = asw.beams[ibeam].number
         ASWING.IBEAM[ibeam] = asw.beams[ibeam].physical_index
         for var in keys(beamvarval)
@@ -411,11 +411,13 @@ function geteigs(neig, zshift, ipnt; evmin = 1e-4, evtol = 1e-3)
     EIGEN.ZESEED[1] = zshift
 
     # compute only eigenvalues for specified operating points
+    nbeigen = ASWING.NBEIGEN[1]
     lrvec = true
     lgerr = false
+    ipini = 0
     ccall((:evexec_, libaswing), Nothing, (Ref{Int32}, Ref{ComplexF64}, Ref{Int32},
         Ref{Int32}, Ref{Int32}, Ref{Float64}, Ref{Float64}, Ref{Int32}),
-        ipnt, zshift, ASWING.NBEIGEN[1], lrvec, lgerr, evmin, evtol, 0)
+        ipnt, zshift, nbeigen, lrvec, lgerr, evmin, evtol, ipini)
     ccall((:wbcalc_, libaswing), Nothing, (Ref{Int32},), ipnt)
     zlamda = copy(EIGEN.ZLAMDA[1:EIGEN.NEIGEN[1]])
     return zlamda
