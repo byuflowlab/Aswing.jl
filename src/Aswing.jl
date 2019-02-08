@@ -1,12 +1,25 @@
 module Aswing
 using OffsetArrays
 
+__precompile__(false)
+
 function __init__()
     global UNITS = UNITS_s()
     global ASWING = ASWING_s()
     global EIGEN = EIGEN_s()
     global THCALC = THCALC_s()
     global CONLAW = CONLAW_s()
+    initialize()
+end
+
+const depsfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
+if isfile(depsfile)
+    include(depsfile)
+else
+    error("Aswing not properly installed. Please run Pkg.build(\"Aswing\") then restart Julia.")
+end
+
+function initialize()
     ccall((:init_, libaswing), Nothing, ())
     ccall((:setdef_, libaswing), Nothing, ())
     ccall((:iidef_, libaswing), Nothing, ())
@@ -15,13 +28,6 @@ function __init__()
     ccall((:dscheck_, libaswing), Nothing, ())
     THCALC.CUSTOMINTERVALS[1] = false
     THCALC.INTERVALS[0:NBRKX+1] .= 0
-end
-
-const depsfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
-if isfile(depsfile)
-    include(depsfile)
-else
-    error("Aswing not properly installed. Please run Pkg.build(\"Aswing\") then restart Julia.")
 end
 
 # Global variable wrappers and fortran pointer definitions
