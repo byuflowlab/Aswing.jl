@@ -302,15 +302,13 @@ end
 function solvesteady(ipnt1::Integer, ipnt2::Integer; repeat::Integer=0)
     ASWING.STEADY[1] = true
     for ipnt in ipnt1:ipnt2
+        ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) # hack to avoid string passing
         # set operating point
-        ccall((:oper_, libaswing), Nothing,
-            (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
-            rpad("$ipnt",4), rpad("",80), 0.0, 0)
+        ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
         for i = 1:repeat+1
+            ASWING.ARGP1[1:4] .= Vector{Char}(rpad("X",4)) # hack to avoid string passing
             # converge operating point
-            ccall((:oper_, libaswing), Nothing,
-                (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
-                rpad("X",4), rpad("",80), 0.0, 0)
+            ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
             if Bool(ASWING.LCONV[ipnt])
                 break
             end
@@ -328,15 +326,13 @@ solvesteady(ipnt1::Integer; repeat::Integer=0) = solvesteady(ipnt1, ipnt1, repea
 """
 function solveunsteady(deltat::Real, ntimes::Integer, ipnt::Integer=1)
     # set operating point
-    ccall((:oper_, libaswing), Nothing,
-        (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
-        rpad("$ipnt",4), rpad("",80), 0.0, 0)
+    ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) # hack to avoid string passing
+    ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
     # change to unsteady
     ASWING.STEADY[1] = false
     # solve unsteady
-    ccall((:oper_, libaswing), Nothing,
-        (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
-        rpad("X",4), rpad("",80), deltat, ntimes)
+    ASWING.ARGP1[1:4] .= Vector{Char}(rpad("X",4)) # hack to avoid string passing
+    ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), deltat, ntimes)
     # return formatted solution
     return getsolution(1, ASWING.NPOINT[1])
 end
@@ -350,13 +346,11 @@ end
 function retainparam(ipnt1::Integer, ipnt2::Integer)
     for ipnt in ipnt1:ipnt2
         # set operating point
-        ccall((:oper_, libaswing), Nothing,
-            (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
-            rpad("$ipnt",4), rpad("",80), 0.0, 0)
+        ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) #hack to avoid string passing
+        ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
         # set parameters on operating point
-        ccall((:oper_, libaswing), Nothing,
-            (Ptr{UInt8}, Ptr{UInt8}, Ref{Float64}, Ref{Int32}),
-            rpad("R",4), rpad("",80), 0.0, 0)
+        ASWING.ARGP1[1:4] .= Vector{Char}(rpad("R",4)) #hack to avoid string passing
+        ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
     end
     return nothing
 end
@@ -607,7 +601,7 @@ function getstaticmargin(ipnt::Integer=1)
     # Switch to anchored constraints
     setcons(aswconstraints("anchored"))
     # Get quasi-steady solution
-    solution = solvesteady(1)
+    solution = solvesteady(ipnt)
     # check if convergence failed
     if solution.converged == false
         fail = true

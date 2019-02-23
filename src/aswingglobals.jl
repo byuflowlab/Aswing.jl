@@ -108,7 +108,7 @@ struct ASWING_s
     NYGUST::Array{Int32,1}
     NZGUST::Array{Int32,1}
     NFGUST::Array{Int32,1}
-    IGRIM::Array{Float64,1}
+    IGRIM::Array{Int32,1}
     LRES::Array{Int32,1}
     LQJOIN::Array{Int32,2}
     LAN::Array{Int32,1}
@@ -1205,15 +1205,15 @@ struct ASWING_s
         ZC = unsafe_wrap(Array, as_syz_idx, (18, 18, IIX)); as_syz_idx += sizeof(ComplexF64)*18*18*IIX
         zr = unsafe_wrap(Array, as_syz_idx, (18, NGLX+1, IIX)); as_syz_idx += sizeof(ComplexF64)*18*(NGLX+1)*IIX
         ZR = OffsetArrays.OffsetArray(zr, 1:18, 0:NGLX, 1:IIX)
-        zgvsys = unsafe_wrap(Array, as_syz_idx, (NGVX, NGLX+1)); as_syz_idx += sizeof(Float64)*NGVX*(NGLX+1)
+        zgvsys = unsafe_wrap(Array, as_syz_idx, (NGVX, NGLX+1)); as_syz_idx += sizeof(ComplexF64)*NGVX*(NGLX+1)
         ZGVSYS = OffsetArrays.OffsetArray(zgvsys, 1:NGVX, 0:NGLX)
-        zgpsys = unsafe_wrap(Array, as_syz_idx, (NGPX, NGLX+1)); as_syz_idx += sizeof(Float64)*NGPX*(NGLX+1)
+        zgpsys = unsafe_wrap(Array, as_syz_idx, (NGPX, NGLX+1)); as_syz_idx += sizeof(ComplexF64)*NGPX*(NGLX+1)
         ZGPSYS = OffsetArrays.OffsetArray(zgpsys, 1:NGPX, 0:NGLX)
-        zgfsys = unsafe_wrap(Array, as_syz_idx, (NGFX, NGLX+1)); as_syz_idx += sizeof(Float64)*NGFX*(NGLX+1)
+        zgfsys = unsafe_wrap(Array, as_syz_idx, (NGFX, NGLX+1)); as_syz_idx += sizeof(ComplexF64)*NGFX*(NGLX+1)
         ZGFSYS = OffsetArrays.OffsetArray(zgfsys, 1:NGFX, 0:NGLX)
-        ZGVQ = unsafe_wrap(Array, as_syz_idx, (18, NGVQX)); as_syz_idx += sizeof(Float64)*18*NGVQX
-        ZGPQ = unsafe_wrap(Array, as_syz_idx, (18, NGPQX)); as_syz_idx += sizeof(Float64)*18*NGPQX
-        ZGFQ = unsafe_wrap(Array, as_syz_idx, (18, NGFQX)); as_syz_idx += sizeof(Float64)*18*NGFQX
+        ZGVQ = unsafe_wrap(Array, as_syz_idx, (18, NGVQX)); as_syz_idx += sizeof(ComplexF64)*18*NGVQX
+        ZGPQ = unsafe_wrap(Array, as_syz_idx, (18, NGPQX)); as_syz_idx += sizeof(ComplexF64)*18*NGPQX
+        ZGFQ = unsafe_wrap(Array, as_syz_idx, (18, NGFQX)); as_syz_idx += sizeof(ComplexF64)*18*NGFQX
 
         as_syi = cglobal((:as_syi_, libaswing), Int32); as_syi_idx = as_syi
         NGVQ = unsafe_wrap(Array, as_syi_idx, 1); as_syi_idx += sizeof(Int32)

@@ -2,6 +2,18 @@ C --------------------------- C
 C --- Interface Functions --- C
 C --------------------------- C
 
+      SUBROUTINE OPERJL(DELTAT, NTIMES)
+        INCLUDE 'ASWING.INC'
+        CHARACTER*4 COMAND
+        CHARACTER*80 COMARG
+        REAL DELTAT
+        INTEGER NTIMES
+
+        COMAND = ARGP1
+
+        CALL OPER(COMAND, COMARG, DELTAT, NTIMES)
+      END
+
       SUBROUTINE OUTPUTJL(FNAME, FNAMELEN)
         INTEGER, INTENT(IN) :: FNAMELEN
         CHARACTER*(FNAMELEN), INTENT(IN) :: FNAME
