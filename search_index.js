@@ -273,11 +273,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "library.html#Aswing.nodeset-Tuple{Integer,Integer}",
+    "location": "library.html#Aswing.nodeset-Tuple{AbstractArray{#s517,1} where #s517<:(AbstractArray{#s516,1} where #s516<:Integer)}",
     "page": "Library",
     "title": "Aswing.nodeset",
     "category": "method",
-    "text": "nodeset(ibeam::Integer, nnodes::Integer)\nnodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})\n\nSets new number of nodes for ibeam.  A custom number of panels can be used\nbetween break points.\n\n\n\n\n\n"
+    "text": "nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})\n\nSets new number of nodes for ibeam.  A custom number of panels can be used\nbetween break points.\n\n\n\n\n\n"
 },
 
 {
@@ -297,18 +297,18 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "library.html#Aswing.readasw-Tuple{String}",
+    "location": "library.html#Aswing.readasw",
     "page": "Library",
     "title": "Aswing.readasw",
-    "category": "method",
+    "category": "function",
     "text": "readasw(filename::String)\n\nReads a .asw file\n\n\n\n\n\n"
 },
 
 {
-    "location": "library.html#Aswing.readpnt-Tuple{String}",
+    "location": "library.html#Aswing.readpnt",
     "page": "Library",
     "title": "Aswing.readpnt",
-    "category": "method",
+    "category": "function",
     "text": "readpnt(filename::String)\n\nReads a .pnt file\n\n\n\n\n\n"
 },
 
@@ -353,7 +353,7 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "library.html#Aswing.setpnt-Tuple{AbstractArray{Aswing.OperatingPoint,1}}",
+    "location": "library.html#Aswing.setpnt-Tuple{AbstractArray{#s516,1} where #s516<:Aswing.OperatingPoint}",
     "page": "Library",
     "title": "Aswing.setpnt",
     "category": "method",
