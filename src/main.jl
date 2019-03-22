@@ -334,7 +334,7 @@ function solveunsteady(deltat::Real, ntimes::Integer, ipnt::Integer=1)
     ASWING.ARGP1[1:4] .= Vector{Char}(rpad("X",4)) # hack to avoid string passing
     ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), deltat, ntimes)
     # return formatted solution
-    return getsolution(1, ASWING.NPOINT[1])
+    return getsolution(1, ntimes+1)
 end
 
 """

@@ -235,8 +235,10 @@ end
 # converts ASWING output arrays to Solution struct
 function getsolution(ipnt1::Integer, ipnt2::Integer)
 
-    sol = Array{Solution{Float64},1}(undef, ASWING.NPOINT[1])
-    for ipnt = 1:ASWING.NPOINT[1]
+    R = Float64
+
+    sol = Array{Solution{R},1}(undef, max(ipnt2-ipnt1+1,0))
+    for ipnt = ipnt1:ipnt2
         # Process converged boolean
         converged = ASWING.LCONV[ipnt]
         # Process operating point parameters
@@ -307,8 +309,8 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
         trefftz_plane_aero_moment,mach,altitude,density,speed_of_sound,viscosity,
         gravitational_acceleration,load_factor,ASWING.MASS[1])
         #Process spanwise geometry and Solution
-        span_geom = Array{SolutionGeometry{Float64},1}(undef, ASWING.NBEAM[1])
-        span_sol = Array{SolutionSpanwise{Float64},1}(undef, ASWING.NBEAM[1])
+        span_geom = Array{SolutionGeometry{R},1}(undef, ASWING.NBEAM[1])
+        span_sol = Array{SolutionSpanwise{R},1}(undef, ASWING.NBEAM[1])
         for ibeam = 1:ASWING.NBEAM[1]
             i1 = convert(Int,ASWING.IFRST[ibeam])
             i2 = convert(Int,ASWING.ILAST[ibeam])
@@ -359,7 +361,7 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
             dCLdF = ASWING.QPAR[i1:i2,JCLF1:JCLF20]
             dCMdF = ASWING.QPAR[i1:i2,JCMF1:JCMF20]
             dCDdF = ASWING.QPAR[i1:i2,JCDF1:JCDF20]
-            span_geom[ibeam] = SolutionGeometry{Float64}(sgeom,x,y,z,twist,EIcc,EInn,EIcn,EIcs,EIsn,GJ,
+            span_geom[ibeam] = SolutionGeometry{R}(sgeom,x,y,z,twist,EIcc,EInn,EIcn,EIcs,EIsn,GJ,
             EA,GKc,GKn,mgcc,mgnn,mg,Ccg,Ncg,Dmgcc,Dmgnn,Dmg,DCcg,DNcg,Cea,Nea,Cta,Nta,
             tdeps,tdgam,Cshell,Nshell,Atshell,radius,Cdf,Cdp,chord,Xax,alpha,Cm,CLmax,
             CLmin,dCLda,dCLdF, dCMdF, dCDdF)
@@ -391,13 +393,15 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
             f_reac=ASWING.QPNT[i1:(i2-1),25,ipnt]
             da_eff=ASWING.QPNT[i1:(i2-1),26,ipnt]
             da_flp=ASWING.QPNT[i1:(i2-1),27,ipnt]
-            span_sol[ibeam] = SolutionSpanwise{Float64}(x,y,z,psi,theta,phi,Mc,Ms,Mn,Fc,Fs,Fn,
+            span_sol[ibeam] = SolutionSpanwise{R}(x,y,z,psi,theta,phi,Mc,Ms,Mn,Fc,Fs,Fn,
             ux,uy,uz,wx,wy,wz,max_extensional_strain,shear_stress,chord,cl,cm,f_aero,
             f_reac,da_eff,da_flp)
         end
 
         # Create combined Solution
-        sol[ipnt] = Solution{Float64}(converged,pnt_param,span_geom,span_sol)
+        sol[ipnt] = Solution{R}(converged,pnt_param,span_geom,span_sol)
     end
     return sol
 end
+
+getsolution() = getsolution(1,ASWING.NPOINT[1])
