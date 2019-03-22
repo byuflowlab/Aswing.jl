@@ -1,43 +1,51 @@
 import Aswing
-using Base.Test
 
-# Read and input .asw file (can also be constructed manually)
+# Read and input .asw file
 inputasw = "hawk.asw"
 asw = Aswing.readasw(inputasw)
 Aswing.setgeom(asw)
 
-# Read and input .pnt file (can also be constructed manually)
+# Read and input .pnt file
 inputpnt = "hawk.pnt"
 pnt = Aswing.readpnt(inputpnt)
 Aswing.setpnt(pnt)
 
-# Save .asw and .pnt files, saved files can be used with standalone ASWING
+# Save .asw and .pnt files, can be used with original ASWING
 outputasw = "out.asw"
 Aswing.aswsav(outputasw)
 outputpnt = "out.pnt"
 Aswing.pntsav(outputpnt)
 
-# quasi-steady solve
+# ASWING files can also be read using the following functions
+newasw = Aswing.readasw(outputasw)
+newpnt = Aswing.readpnt(outputpnt)
+
+# solves for first operating point
 steady_solution = Aswing.solvesteady(1)
 
-# get stability derivatives
-stabderivs = Aswing.getstabderivs()
+# gets stability derivatives of first operating point
+stabderivs = Aswing.getstabilityderivatives(1)
 
-# get static margin
-sm, fail = Aswing.getstaticmargin(1)
+# you can also get and/or set the paneling between break points
+newintervals = [Aswing.getintervals(i) for i  in 1:4]*2
+Aswing.nodeset(newintervals)
+steady_solution = Aswing.solvesteady(1)
 
-# get unsteady solution
-Aswing.retainparam()
-constraints_unsteady = Aswing.aswconstraints("free")
-Aswing.setcons(constraints_unsteady)
-unsteady_solution = Aswing.solveunsteady(0.1, 10)
+# quasi-steady and rigid static margins can be calculated, but the
+# geometry and operating point conditions will need to be re-input afterwards
+sm_qs, sm_rigid, fail = Aswing.getstaticmargin(1)
 
-# get eigenvalues
-asweigs = Aswing.geteigs(16, -0.1+0.0im, 1)
+Aswing.setgeom(asw)
+Aswing.setpnt(pnt)
+steady_solution = Aswing.solvesteady(1)
 
-# get paneling between break points
+# note that when you input the geometry again the paneling is reset to the defaults
 intervals = [Aswing.getintervals(i) for i  in 1:4]
 
-# set new paneling between break points and solve again
-Aswing.nodeset(newintervals*2)
-steady_solution = Aswing.solvesteady(1)
+# you can also do unsteady solves
+Aswing.retainparam()
+Aswing.setcons(Aswing.Constraints("free"))
+unsteady_solution = Aswing.solveunsteady(0.1, 10)
+
+# and you can get eigenvalues
+asweigs = Aswing.geteigs(16, -0.1+0.0im, 1)

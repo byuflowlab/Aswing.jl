@@ -877,15 +877,15 @@ struct ASWING_s
         RENG  = unsafe_wrap(Array, as_eng_idx, (3, NPX, NPNTX)); as_eng_idx += sizeof(Float64)*3*NPX*NPNTX
         RENG_ANG  = unsafe_wrap(Array, as_eng_idx, (3, 3, NPX)); as_eng_idx += sizeof(Float64)*3*3*NPX
         VENG  = unsafe_wrap(Array, as_eng_idx, (3, NPX, NPNTX)); as_eng_idx += sizeof(Float64)*3*NPX*NPNTX
-        VENG_Q  = unsafe_wrap(Array, as_eng_idx, (3, 18, NPNTX)); as_eng_idx += sizeof(Float64)*3*18*NPNTX
+        VENG_Q  = unsafe_wrap(Array, as_eng_idx, (3, 18, NPX)); as_eng_idx += sizeof(Float64)*3*18*NPX
         veng_gl  = unsafe_wrap(Array, as_eng_idx, (3, NGLX+1, NPX)); as_eng_idx += sizeof(Float64)*3*(NGLX+1)*NPX
         VENG_GL = OffsetArrays.OffsetArray(veng_gl, 1:3, 0:NGLX, 1:NPX)
         FENG  = unsafe_wrap(Array, as_eng_idx, (3, NPX, NPNTX)); as_eng_idx += sizeof(Float64)*3*NPX*NPNTX
-        FENG_Q  = unsafe_wrap(Array, as_eng_idx, (3, 18, NPNTX)); as_eng_idx += sizeof(Float64)*3*18*NPNTX
+        FENG_Q  = unsafe_wrap(Array, as_eng_idx, (3, 18, NPX)); as_eng_idx += sizeof(Float64)*3*18*NPX
         feng_gl  = unsafe_wrap(Array, as_eng_idx, (3, NGLX+1, NPX)); as_eng_idx += sizeof(Float64)*3*(NGLX+1)*NPX
         FENG_GL = OffsetArrays.OffsetArray(feng_gl, 1:3, 0:NGLX, 1:NPX)
         MENG  = unsafe_wrap(Array, as_eng_idx, (3, NPX, NPNTX)); as_eng_idx += sizeof(Float64)*3*NPX*NPNTX
-        MENG_Q  = unsafe_wrap(Array, as_eng_idx, (3, 18, NPNTX)); as_eng_idx += sizeof(Float64)*3*18*NPNTX
+        MENG_Q  = unsafe_wrap(Array, as_eng_idx, (3, 18, NPX)); as_eng_idx += sizeof(Float64)*3*18*NPX
         meng_gl  = unsafe_wrap(Array, as_eng_idx, (3, NGLX+1, NPX))
         MENG_GL = OffsetArrays.OffsetArray(meng_gl, 1:3, 0:NGLX, 1:NPX)
 

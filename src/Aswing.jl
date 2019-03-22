@@ -1,8 +1,6 @@
 module Aswing
 using OffsetArrays
 
-__precompile__(false)
-
 function __init__()
     global UNITS = UNITS_s()
     global ASWING = ASWING_s()
@@ -31,21 +29,21 @@ function initialize()
 end
 
 # Global variable wrappers and fortran pointer definitions
-include("dimenglobals.jl")
-include("indexbglobals.jl")
-include("indexcglobals.jl")
-include("indexpglobals.jl")
-include("unitsglobals.jl")
-include("aswingglobals.jl")
-include("eigenglobals.jl")
-include("thcalcglobals.jl")
-include("conlawglobals.jl")
+include("globals/dimen.jl")
+include("globals/indexb.jl")
+include("globals/indexc.jl")
+include("globals/indexp.jl")
+include("globals/units.jl")
+include("globals/aswing.jl")
+include("globals/eigen.jl")
+include("globals/thcalc.jl")
+include("globals/conlaw.jl")
 
 # defines ASWING geometry input
 include("geom.jl")
 
 # defines ASWING operating point definitions
-include("oppnt.jl")
+include("pnt.jl")
 
 # defines Aswing solution output
 include("sol.jl")
@@ -55,5 +53,8 @@ include("io.jl")
 
 # implements main Aswing calling methods
 include("main.jl")
+
+# deprecated functions
+include("deprecated.jl")
 
 end #modules

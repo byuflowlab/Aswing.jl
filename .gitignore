@@ -4,18 +4,26 @@
 *.ftnchek
 *.mod
 deps/src/aswing/src/mods.txt
+
 # fortran compiled files
 *.o
 *.so
-# aswing files
+
+# aswing generated files
 *.asw
 *.pnt
 *.set
+
 # julia files
 Manifest.toml
+
 # build process files
 deps/build.log
 deps/deps.jl
 deps/downloads
 deps/src/ARPACK
 deps/usr
+
+# documentation
+docs/build
+docs/site

@@ -10,6 +10,7 @@ C --------------------------- C
         INTEGER NTIMES
 
         COMAND = ARGP1
+        COMARG = ' '
 
         CALL OPER(COMAND, COMARG, DELTAT, NTIMES)
       END

@@ -1,11 +1,11 @@
 # contains main ASWING calling routines
 
 """
-    setgeom(asw::aswgeominput)
+    setgeom(asw::Configuration)
 
     Inputs geometry into ASWING
 """
-function setgeom(asw::aswgeominput)
+function setgeom(asw::Configuration)
 
     # clear variable array sizes
     ASWING.NB[:, :] .= 0
@@ -179,7 +179,7 @@ end
     setpnt(point)
     Inputs operating point(s) into ASWING
 """
-function setpnt(point::AbstractArray{operatingpoint,1})
+function setpnt(point::AbstractArray{OperatingPoint,1})
     # set number of operating points
     npoint = length(point)
     ASWING.NPOINT[1] = npoint
@@ -199,7 +199,7 @@ function setpnt(point::AbstractArray{operatingpoint,1})
     # set Mach number for Prandtl-Glauert correction
     for ipnt = 1:npoint
         for ip = 1:KPFREE
-            ccall((:psp2par_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}), ipnt, ip)
+            ccall((:psp2par_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}), ip, ipnt)
         end
         ASWING.PARAM[KPMACH, ipnt] =  point[ipnt].machpg
     end
@@ -302,12 +302,12 @@ end
 function solvesteady(ipnt1::Integer, ipnt2::Integer; repeat::Integer=0)
     ASWING.STEADY[1] = true
     for ipnt in ipnt1:ipnt2
-        ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) # hack to avoid string passing
         # set operating point
+        ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) # hack to avoid string passing
         ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
         for i = 1:repeat+1
-            ASWING.ARGP1[1:4] .= Vector{Char}(rpad("X",4)) # hack to avoid string passing
             # converge operating point
+            ASWING.ARGP1[1:4] .= Vector{Char}(rpad("X",4)) # hack to avoid string passing
             ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
             if Bool(ASWING.LCONV[ipnt])
                 break
@@ -362,7 +362,13 @@ retainparam(ipnt1::Integer) = retainparam(ipnt1, ipnt1)
     Freezes geometry at current state
 """
 function freeze(ipoint = 1)
+
   ccall((:freeze_,libaswing), Nothing, (Ref{Int32},), ipoint)
+
+  for i = 1 : ASWING.NPOINT[1]
+    ASWING.LCONV[i] = false
+  end
+
 end
 
 """
@@ -418,10 +424,10 @@ function geteigs(neig, zshift, ipnt; evmin = 1e-4, evtol = 1e-3)
 end
 
 """
-    getstabderivs(ipnt = 1, momref=Float64[])
+    getstabilityderivatives(ipnt = 1, momref=Float64[])
     Calculates stability derivatives
 """
-function getstabderivs(ipnt::Integer = 1, momref::AbstractArray{<:Real,1}=Float64[])
+function getstabilityderivatives(ipnt::Integer = 1, momref::AbstractArray{<:Real,1}=Float64[])
     if !isempty(momref)
         # assign new moment reference point
         ASWING.XYZREF[:,1] = momref
@@ -451,7 +457,7 @@ function getstabderivs(ipnt::Integer = 1, momref::AbstractArray{<:Real,1}=Float6
     f_peng = f_peng[:,idx]
     m_peng = m_peng[:,idx]
 
-  return stabderivs_s(f_vba, m_vba, f_rot, m_rot, f_flap, m_flap, f_peng, m_peng)
+  return StabilityDerivatives(f_vba, m_vba, f_rot, m_rot, f_flap, m_flap, f_peng, m_peng)
 end
 
 """
@@ -592,30 +598,58 @@ end
 """
     getstaticmargin(ipnt::Integer=1)
 
-    Calculates static margin.  Assumes constraints are set up for trimmed flight.
-    Also returns a failure flag.
+    Returns quasi-steady static margin, rigidized static margin, and a solution
+    failure flag.  Assumes constraints are set up for trimmed flight and follows
+    the instructions in derivative_calc.txt. This function performs irreversible
+    changes so you will need to re-input the geometry afterwards.
 """
 function getstaticmargin(ipnt::Integer=1)
     # no convergence failures yet
     fail = false
-    # Switch to anchored constraints
-    setcons(aswconstraints("anchored"))
+
     # Get quasi-steady solution
     solution = solvesteady(ipnt)
-    # check if convergence failed
+
     if solution.converged == false
         fail = true
     end
+
+    # Retain parameters
+    retainparam(ipnt)
+
+    # Switch to anchored constraints
+    setcons(Constraints("anchored"))
+
+    # Get quasi-steady Solution
+    solution_qs = solvesteady(ipnt)
+
     # check if convergence failed
-    if solution.converged == false
+    if solution_qs.converged == false
         fail = true
     end
 
     # Get stability matrices using center of gravity as moment reference
-    stabderivs = getstabderivs(ipnt, solution.pnt_param.position_aircraft_cg)
+    stabderivs_qs = getstabilityderivatives(ipnt, solution_qs.pnt_param.position_aircraft_cg)
 
     # calculate static margin
-    sm = -stabderivs.Cma/stabderivs.CLa*100
+    sm_qs = -stabderivs_qs.Cma/stabderivs_qs.CLa*100
 
-    return sm, fail
+    # rigidize aircraft at current deformed shape
+    freeze(ipnt)
+
+    # Get quasi-steady solution
+    solution_rigid = solvesteady(ipnt)
+
+    # check if convergence failed
+    if solution_rigid.converged == false
+        fail = true
+    end
+
+    # Get stability matrices using center of gravity as moment reference
+    stabderivs_rigid = getstabilityderivatives(ipnt, solution_rigid.pnt_param.position_aircraft_cg)
+
+    # calculate static margin
+    sm_rigid = -stabderivs_rigid.Cma/stabderivs_rigid.CLa*100
+
+    return sm_qs, sm_rigid, fail
 end #getstaticmargin

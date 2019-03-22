@@ -1,58 +1,61 @@
-# defines structures for holding ASWING solution data
+# defines structures for holding ASWING Solution data
 
-struct stabderivs_s
-    CXu::Float64
-    CYu::Float64
-    CLu::Float64
-    CXb::Float64
-    CYb::Float64
-    CLb::Float64
-    CXa::Float64
-    CYa::Float64
-    CLa::Float64
-    Clu::Float64
-    Cmu::Float64
-    Cnu::Float64
-    Clb::Float64
-    Cmb::Float64
-    Cnb::Float64
-    Cla::Float64
-    Cma::Float64
-    Cna::Float64
-    CXp::Float64
-    CYp::Float64
-    CLp::Float64
-    CXq::Float64
-    CYq::Float64
-    CLq::Float64
-    CXr::Float64
-    CYr::Float64
-    CLr::Float64
-    Clp::Float64
-    Cmp::Float64
-    Cnp::Float64
-    Clq::Float64
-    Cmq::Float64
-    Cnq::Float64
-    Clr::Float64
-    Cmr::Float64
-    Cnr::Float64
-    CXdF::Array{Float64,1}
-    CYdF::Array{Float64,1}
-    CLdF::Array{Float64,1}
-    CldF::Array{Float64,1}
-    CmdF::Array{Float64,1}
-    CndF::Array{Float64,1}
-    CXdP::Array{Float64,1}
-    CYdP::Array{Float64,1}
-    CLdP::Array{Float64,1}
-    CldP::Array{Float64,1}
-    CmdP::Array{Float64,1}
-    CndP::Array{Float64,1}
-    function stabderivs_s(f_vba, m_vba, f_rot, m_rot, f_flap, m_flap, f_peng,
-        m_peng)
+struct StabilityDerivatives{R<:Real}
+    CXu::R
+    CYu::R
+    CLu::R
+    CXb::R
+    CYb::R
+    CLb::R
+    CXa::R
+    CYa::R
+    CLa::R
+    Clu::R
+    Cmu::R
+    Cnu::R
+    Clb::R
+    Cmb::R
+    Cnb::R
+    Cla::R
+    Cma::R
+    Cna::R
+    CXp::R
+    CYp::R
+    CLp::R
+    CXq::R
+    CYq::R
+    CLq::R
+    CXr::R
+    CYr::R
+    CLr::R
+    Clp::R
+    Cmp::R
+    Cnp::R
+    Clq::R
+    Cmq::R
+    Cnq::R
+    Clr::R
+    Cmr::R
+    Cnr::R
+    CXdF::Array{R,1}
+    CYdF::Array{R,1}
+    CLdF::Array{R,1}
+    CldF::Array{R,1}
+    CmdF::Array{R,1}
+    CndF::Array{R,1}
+    CXdP::Array{R,1}
+    CYdP::Array{R,1}
+    CLdP::Array{R,1}
+    CldP::Array{R,1}
+    CmdP::Array{R,1}
+    CndP::Array{R,1}
+    function (::Type{StabilityDerivatives{R}})(f_vba::AbstractArray{<:Real,2},
+        m_vba::AbstractArray{<:Real,2}, f_rot::AbstractArray{<:Real,2},
+        m_rot::AbstractArray{<:Real,2}, f_flap::AbstractArray{<:Real,2},
+        m_flap::AbstractArray{<:Real,2}, f_peng::AbstractArray{<:Real,2},
+        m_peng::AbstractArray{<:Real,2}) where R<:Real
 
-        new(f_vba[1,1], f_vba[2,1], -f_vba[3,1],
+        new{R}(f_vba[1,1], f_vba[2,1], -f_vba[3,1],
         f_vba[1,2], f_vba[2,2], -f_vba[3,2],
         f_vba[1,3], f_vba[2,3], -f_vba[3,3],
         m_vba[1,1], m_vba[2,1], m_vba[3,1],
@@ -71,157 +74,169 @@ struct stabderivs_s
     end
 end
 
-# contains solution information for an operating point
-struct solutionparameters
-    linear_acceleration::Array{Float64,1}
-    angular_acceleration::Array{Float64,1}
-    velocity::Array{Float64,1}
-    rotation_rate::Array{Float64,1}
-    position_aircraft_origin::Array{Float64,1}
-    phi::Float64
-    theta::Float64
-    psi::Float64
-    flap_defl_ctrl_var::Array{Float64,1}
-    eng_pwr_ctrl_var::Array{Float64,1}
-    err_int_Vinf::Float64
-    err_int_beta::Float64
-    err_int_alpha::Float64
-    err_int_phi::Float64
-    err_int_theta::Float64
-    err_int_psi::Float64
-    err_int_ROTxyz::Array{Float64,1}
-    err_int_VACxyz::Array{Float64,1}
-    position_aircraft_cg::Array{Float64,1}
-    freestream_speed::Float64
-    freestream_sideslip_angle::Float64
-    freestream_incidence_angle::Float64
-    indicated_V::Float64
-    indicated_beta::Float64
-    indicated_alpha::Float64
-    drag_force::Float64
-    side_force::Float64
-    lift_force::Float64
-    induced_drag_coefficient::Float64
-    drag_coefficient::Float64
-    sideforce_coefficient::Float64
-    lift_coefficient::Float64
-    rolling_moment_coefficient::Float64
-    pitching_moment_coefficient::Float64
-    yawing_moment_coefficient::Float64
-    span_efficiency::Float64
-    aero_force::Array{Float64,1}
-    aero_moment::Array{Float64,1}
-    accel_reaction_force::Array{Float64,1}
-    accel_reaction_moment::Array{Float64,1}
-    ground_reaction_force::Array{Float64,1}
-    ground_reaction_moment::Array{Float64,1}
-    engine_force::Array{Float64,1}
-    engine_moment::Array{Float64,1}
-    trefftz_plane_aero_force::Array{Float64,1}
-    trefftz_plane_aero_moment::Array{Float64,1}
-    mach::Float64
-    altitude::Float64
-    density::Float64
-    speed_of_sound::Float64
-    viscosity::Float64
-    gravitational_acceleration::Float64
-    load_factor::Float64
-    mass::Float64
+function StabilityDerivatives(f_vba::AbstractArray{<:Real,2},
+    m_vba::AbstractArray{<:Real,2}, f_rot::AbstractArray{<:Real,2},
+    m_rot::AbstractArray{<:Real,2}, f_flap::AbstractArray{<:Real,2},
+    m_flap::AbstractArray{<:Real,2}, f_peng::AbstractArray{<:Real,2},
+    m_peng::AbstractArray{<:Real,2})
+
+    StabilityDerivatives{Float64}(f_vba, m_vba, f_rot, m_rot, f_flap, m_flap,
+        f_peng, m_peng)
 end
 
-# contains spanwise input variable information interpolated to solution nodes
-struct solutiongeometry
-    s::Array{Float64,1}
-    x::Array{Float64,1}
-    y::Array{Float64,1}
-    z::Array{Float64,1}
-    twist::Array{Float64,1}
-    EIcc::Array{Float64,1}
-    EInn::Array{Float64,1}
-    EIcn::Array{Float64,1}
-    EIcs::Array{Float64,1}
-    EIsn::Array{Float64,1}
-    GJ::Array{Float64,1}
-    EA::Array{Float64,1}
-    GKc::Array{Float64,1}
-    GKn::Array{Float64,1}
-    mgcc::Array{Float64,1}
-    mgnn::Array{Float64,1}
-    mg::Array{Float64,1}
-    Ccg::Array{Float64,1}
-    Ncg::Array{Float64,1}
-    Dmgcc::Array{Float64,1}
-    Dmgnn::Array{Float64,1}
-    Dmg::Array{Float64,1}
-    DCcg::Array{Float64,1}
-    DNcg::Array{Float64,1}
-    Cea::Array{Float64,1}
-    Nea::Array{Float64,1}
-    Cta::Array{Float64,1}
-    Nta::Array{Float64,1}
-    tdeps::Array{Float64,1}
-    tdgam::Array{Float64,1}
-    Cshell::Array{Float64,1}
-    Nshell::Array{Float64,1}
-    Atshell::Array{Float64,1}
-    radius::Array{Float64,1}
-    Cdf::Array{Float64,1}
-    Cdp::Array{Float64,1}
-    chord::Array{Float64,1}
-    Xax::Array{Float64,1}
-    alpha::Array{Float64,1}
-    Cm::Array{Float64,1}
-    CLmax::Array{Float64,1}
-    CLmin::Array{Float64,1}
-    dCLda::Array{Float64,1}
-    dCLdF::Array{Float64,2}
-    dCMdF::Array{Float64,2}
-    dCDdF::Array{Float64,2}
+# contains Solution information for an operating point
+struct SolutionParameters{R<:Real}
+    linear_acceleration::Array{R,1}
+    angular_acceleration::Array{R,1}
+    velocity::Array{R,1}
+    rotation_rate::Array{R,1}
+    position_aircraft_origin::Array{R,1}
+    phi::R
+    theta::R
+    psi::R
+    flap_defl_ctrl_var::Array{R,1}
+    eng_pwr_ctrl_var::Array{R,1}
+    err_int_Vinf::R
+    err_int_beta::R
+    err_int_alpha::R
+    err_int_phi::R
+    err_int_theta::R
+    err_int_psi::R
+    err_int_ROTxyz::Array{R,1}
+    err_int_VACxyz::Array{R,1}
+    position_aircraft_cg::Array{R,1}
+    freestream_speed::R
+    freestream_sideslip_angle::R
+    freestream_incidence_angle::R
+    indicated_V::R
+    indicated_beta::R
+    indicated_alpha::R
+    drag_force::R
+    side_force::R
+    lift_force::R
+    induced_drag_coefficient::R
+    drag_coefficient::R
+    sideforce_coefficient::R
+    lift_coefficient::R
+    rolling_moment_coefficient::R
+    pitching_moment_coefficient::R
+    yawing_moment_coefficient::R
+    span_efficiency::R
+    aero_force::Array{R,1}
+    aero_moment::Array{R,1}
+    accel_reaction_force::Array{R,1}
+    accel_reaction_moment::Array{R,1}
+    ground_reaction_force::Array{R,1}
+    ground_reaction_moment::Array{R,1}
+    engine_force::Array{R,1}
+    engine_moment::Array{R,1}
+    trefftz_plane_aero_force::Array{R,1}
+    trefftz_plane_aero_moment::Array{R,1}
+    mach::R
+    altitude::R
+    density::R
+    speed_of_sound::R
+    viscosity::R
+    gravitational_acceleration::R
+    load_factor::R
+    mass::R
 end
 
-# contains spanwise output variable information at solution nodes
-struct solutionspanwise
-    x::Array{Float64,1}
-    y::Array{Float64,1}
-    z::Array{Float64,1}
-    phi::Array{Float64,1}
-    theta::Array{Float64,1}
-    psi::Array{Float64,1}
-    Mc::Array{Float64,1}
-    Ms::Array{Float64,1}
-    Mn::Array{Float64,1}
-    Fc::Array{Float64,1}
-    Fs::Array{Float64,1}
-    Fn::Array{Float64,1}
-    ux::Array{Float64,1}
-    uy::Array{Float64,1}
-    uz::Array{Float64,1}
-    wx::Array{Float64,1}
-    wy::Array{Float64,1}
-    wz::Array{Float64,1}
-    max_extensional_strain::Array{Float64,1}
-    shear_stress::Array{Float64,1}
-    chord::Array{Float64,1}
-    cl::Array{Float64,1}
-    cm::Array{Float64,1}
-    f_aero::Array{Float64,1}
-    f_reac::Array{Float64,1}
-    da_eff::Array{Float64,1} # aeroelastic twist
-    da_flp::Array{Float64,1} # additional twist due to flaps
+# contains spanwise input variable information interpolated to Solution nodes
+struct SolutionGeometry{R<:Real}
+    s::Array{R,1}
+    x::Array{R,1}
+    y::Array{R,1}
+    z::Array{R,1}
+    twist::Array{R,1}
+    EIcc::Array{R,1}
+    EInn::Array{R,1}
+    EIcn::Array{R,1}
+    EIcs::Array{R,1}
+    EIsn::Array{R,1}
+    GJ::Array{R,1}
+    EA::Array{R,1}
+    GKc::Array{R,1}
+    GKn::Array{R,1}
+    mgcc::Array{R,1}
+    mgnn::Array{R,1}
+    mg::Array{R,1}
+    Ccg::Array{R,1}
+    Ncg::Array{R,1}
+    Dmgcc::Array{R,1}
+    Dmgnn::Array{R,1}
+    Dmg::Array{R,1}
+    DCcg::Array{R,1}
+    DNcg::Array{R,1}
+    Cea::Array{R,1}
+    Nea::Array{R,1}
+    Cta::Array{R,1}
+    Nta::Array{R,1}
+    tdeps::Array{R,1}
+    tdgam::Array{R,1}
+    Cshell::Array{R,1}
+    Nshell::Array{R,1}
+    Atshell::Array{R,1}
+    radius::Array{R,1}
+    Cdf::Array{R,1}
+    Cdp::Array{R,1}
+    chord::Array{R,1}
+    Xax::Array{R,1}
+    alpha::Array{R,1}
+    Cm::Array{R,1}
+    CLmax::Array{R,1}
+    CLmin::Array{R,1}
+    dCLda::Array{R,1}
+    dCLdF::Array{R,2}
+    dCMdF::Array{R,2}
+    dCDdF::Array{R,2}
 end
 
-# contains aswing solution data
-struct solution
+# contains spanwise output variable information at Solution nodes
+struct SolutionSpanwise{R<:Real}
+    x::Array{R,1}
+    y::Array{R,1}
+    z::Array{R,1}
+    phi::Array{R,1}
+    theta::Array{R,1}
+    psi::Array{R,1}
+    Mc::Array{R,1}
+    Ms::Array{R,1}
+    Mn::Array{R,1}
+    Fc::Array{R,1}
+    Fs::Array{R,1}
+    Fn::Array{R,1}
+    ux::Array{R,1}
+    uy::Array{R,1}
+    uz::Array{R,1}
+    wx::Array{R,1}
+    wy::Array{R,1}
+    wz::Array{R,1}
+    max_extensional_strain::Array{R,1}
+    shear_stress::Array{R,1}
+    chord::Array{R,1}
+    cl::Array{R,1}
+    cm::Array{R,1}
+    f_aero::Array{R,1}
+    f_reac::Array{R,1}
+    da_eff::Array{R,1} # aeroelastic twist
+    da_flp::Array{R,1} # additional twist due to flaps
+end
+
+
+# contains aswing Solution data
+struct Solution{R<:Real}
     converged::Bool
-    pnt_param::solutionparameters
-    span_geom::Array{solutiongeometry,1}
-    span_param::Array{solutionspanwise,1}
+    pnt_param::SolutionParameters{R}
+    span_geom::Array{SolutionGeometry{R},1}
+    span_param::Array{SolutionSpanwise{R},1}
 end
 
-# converts ASWING output arrays to solution struct
+# converts ASWING output arrays to Solution struct
 function getsolution(ipnt1::Integer, ipnt2::Integer)
-    sol = Array{solution,1}(undef, ASWING.NPOINT[1])
-    for ipnt = ipnt1:ipnt2
+
+    sol = Array{Solution{Float64},1}(undef, ASWING.NPOINT[1])
+    for ipnt = 1:ASWING.NPOINT[1]
         # Process converged boolean
         converged = ASWING.LCONV[ipnt]
         # Process operating point parameters
@@ -278,7 +293,7 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
         viscosity = ASWING.PARAM[KPVISC,ipnt]
         gravitational_acceleration = ASWING.PARAM[KPGRAV,ipnt]
         load_factor = ASWING.PARAM[KPLOAD,ipnt]
-        pnt_param = solutionparameters(linear_acceleration,angular_acceleration,velocity,rotation_rate,
+        pnt_param = SolutionParameters(linear_acceleration,angular_acceleration,velocity,rotation_rate,
         position_aircraft_origin,phi,theta,psi,flap_defl_ctrl_var,eng_pwr_ctrl_var,
         err_int_Vinf,err_int_beta,err_int_alpha,err_int_phi,err_int_theta,err_int_psi,
         err_int_ROTxyz,err_int_VACxyz,position_aircraft_cg,freestream_speed,
@@ -291,12 +306,12 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
         ground_reaction_moment,engine_force,engine_moment,trefftz_plane_aero_force,
         trefftz_plane_aero_moment,mach,altitude,density,speed_of_sound,viscosity,
         gravitational_acceleration,load_factor,ASWING.MASS[1])
-        #Process spanwise geometry and solution
-        span_geom = Array{solutiongeometry,1}(undef, ASWING.NBEAM[1])
-        span_sol = Array{solutionspanwise,1}(undef, ASWING.NBEAM[1])
+        #Process spanwise geometry and Solution
+        span_geom = Array{SolutionGeometry{Float64},1}(undef, ASWING.NBEAM[1])
+        span_sol = Array{SolutionSpanwise{Float64},1}(undef, ASWING.NBEAM[1])
         for ibeam = 1:ASWING.NBEAM[1]
-            i1 = convert(Int64,ASWING.IFRST[ibeam])
-            i2 = convert(Int64,ASWING.ILAST[ibeam])
+            i1 = convert(Int,ASWING.IFRST[ibeam])
+            i2 = convert(Int,ASWING.ILAST[ibeam])
             # spanwise geometry
             sgeom = ASWING.S[i1:i2]
             x = ASWING.QPAR[i1:i2,JXA]
@@ -344,11 +359,11 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
             dCLdF = ASWING.QPAR[i1:i2,JCLF1:JCLF20]
             dCMdF = ASWING.QPAR[i1:i2,JCMF1:JCMF20]
             dCDdF = ASWING.QPAR[i1:i2,JCDF1:JCDF20]
-            span_geom[ibeam] = solutiongeometry(sgeom,x,y,z,twist,EIcc,EInn,EIcn,EIcs,EIsn,GJ,
+            span_geom[ibeam] = SolutionGeometry{Float64}(sgeom,x,y,z,twist,EIcc,EInn,EIcn,EIcs,EIsn,GJ,
             EA,GKc,GKn,mgcc,mgnn,mg,Ccg,Ncg,Dmgcc,Dmgnn,Dmg,DCcg,DNcg,Cea,Nea,Cta,Nta,
             tdeps,tdgam,Cshell,Nshell,Atshell,radius,Cdf,Cdp,chord,Xax,alpha,Cm,CLmax,
             CLmin,dCLda,dCLdF, dCMdF, dCDdF)
-            # spanwise solution
+            # spanwise Solution
             x=ASWING.QPNT[i1:i2,1,ipnt]
             y=ASWING.QPNT[i1:i2,2,ipnt]
             z=ASWING.QPNT[i1:i2,3,ipnt]
@@ -376,40 +391,13 @@ function getsolution(ipnt1::Integer, ipnt2::Integer)
             f_reac=ASWING.QPNT[i1:(i2-1),25,ipnt]
             da_eff=ASWING.QPNT[i1:(i2-1),26,ipnt]
             da_flp=ASWING.QPNT[i1:(i2-1),27,ipnt]
-            span_sol[ibeam] = solutionspanwise(x,y,z,psi,theta,phi,Mc,Ms,Mn,Fc,Fs,Fn,
+            span_sol[ibeam] = SolutionSpanwise{Float64}(x,y,z,psi,theta,phi,Mc,Ms,Mn,Fc,Fs,Fn,
             ux,uy,uz,wx,wy,wz,max_extensional_strain,shear_stress,chord,cl,cm,f_aero,
             f_reac,da_eff,da_flp)
         end
 
-        # Create combined solution
-        sol[ipnt] = solution(converged,pnt_param,span_geom,span_sol)
+        # Create combined Solution
+        sol[ipnt] = Solution{Float64}(converged,pnt_param,span_geom,span_sol)
     end
     return sol
-end
-
-# contains beam mass solution data
-struct beammass_output
-    beam_type::Int32
-    beam_number::Int32
-    mass::Float64
-    center_gravity::Array{Float64,1}
-    Ixx::Float64
-    Iyy::Float64
-    Izz::Float64
-    apparent_mass::Float64
-    apparent_Ixx_cg::Float64
-    area::Float64
-    AR::Float64
-end
-
-# contains inertia solution data
-struct inertia_output
-    mass_centroid::Array{Float64,1}
-    rho_ratio::Float64
-    real_mass::Array{Float64,2}
-    apparent_mass::Array{Float64,2}
-    real_inertia_xyz::Array{Float64,2}
-    apparent_inertia_xyz::Array{Float64,2}
-    real_inertia_mc::Array{Float64,2}
-    apparent_inertia_mc::Array{Float64,2}
 end

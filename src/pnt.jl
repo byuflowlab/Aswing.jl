@@ -23,8 +23,8 @@ const dparam = Dict{String,Int32}("accel_x"=>IPVACX, "accel_y"=>IPVACY,
 "usr1" => IPUSR1, "usr2" => IPUSR2, "least_squared" => IPLSQD)
 
 """
-    aswconstraints(mode::String)
-    aswconstraints(;
+    Constraints(mode::String)
+    Constraints(;
         linear_acceleration::AbstractArray{<:Integer,1} =
             -[dparam["accel_x"],dparam["accel_y"],dparam["accel_z"]],
         angular_acceleration::AbstractArray{<:Integer,1} =
@@ -54,28 +54,28 @@ const dparam = Dict{String,Int32}("accel_x"=>IPVACX, "accel_y"=>IPVACY,
     Defines operating point constraints as done within ASWING.
     Implemented modes: ["default", "anchored", "free", "static"]
 """
-struct aswconstraints
-    linear_acceleration::Array{Int32,1}
-    angular_acceleration::Array{Int32,1}
-    velocity::Array{Int32,1}
-    rotation_rate::Array{Int32,1}
-    position::Array{Int32,1}
-    phi::Int32
-    theta::Int32
-    psi::Int32
-    flap_defl_ctrl_var::Array{Int32,1}
-    eng_pwr_ctrl_var::Array{Int32,1}
-    err_int_Vinf::Int32
-    err_int_beta::Int32
-    err_int_alpha::Int32
-    err_int_phi::Int32
-    err_int_theta::Int32
-    err_int_psi::Int32
-    err_int_ROTxyz::Array{Int32,1}
-    err_int_VACxyz::Array{Int32,1}
+struct Constraints
+    linear_acceleration::Array{Int,1}
+    angular_acceleration::Array{Int,1}
+    velocity::Array{Int,1}
+    rotation_rate::Array{Int,1}
+    position::Array{Int,1}
+    phi::Int
+    theta::Int
+    psi::Int
+    flap_defl_ctrl_var::Array{Int,1}
+    eng_pwr_ctrl_var::Array{Int,1}
+    err_int_Vinf::Int
+    err_int_beta::Int
+    err_int_alpha::Int
+    err_int_phi::Int
+    err_int_theta::Int
+    err_int_psi::Int
+    err_int_ROTxyz::Array{Int,1}
+    err_int_VACxyz::Array{Int,1}
 end
 
-function aswconstraints(;
+function Constraints(;
     linear_acceleration::AbstractArray{<:Integer,1} =
         -[dparam["accel_x"],dparam["accel_y"],dparam["accel_z"]],
     angular_acceleration::AbstractArray{<:Integer,1} =
@@ -100,14 +100,14 @@ function aswconstraints(;
     err_int_theta::Integer = dparam["ang_vel_y"],
     err_int_psi::Integer = dparam["ang_vel_z"],
     err_int_ROTxyz::AbstractArray{<:Integer,1} = [0,0,0],
-    err_int_VACxyz::AbstractArray{<:Integer,1} = [0,0,0])
-    aswconstraints(linear_acceleration, angular_acceleration, velocity,
+    err_int_VACxyz::AbstractArray{<:Integer,1} = [0,0,0]) where Int<:Integer
+    Constraints(linear_acceleration, angular_acceleration, velocity,
         rotation_rate, position, phi, theta, psi, flap_defl_ctrl_var,
         eng_pwr_ctrl_var, err_int_Vinf, err_int_beta, err_int_alpha,
         err_int_phi, err_int_theta, err_int_psi, err_int_ROTxyz, err_int_VACxyz)
 end
 
-function aswconstraints(mode::String)
+function Constraints(mode::String) where Int<:Integer
     if lowercase(mode) == "default"
         linear_acceleration = -[dparam["accel_x"],dparam["accel_y"],dparam["accel_z"]]
         angular_acceleration = -[dparam["ang_accel_x"],dparam["ang_accel_y"],dparam["ang_accel_z"]]
@@ -165,28 +165,28 @@ function aswconstraints(mode::String)
     err_int_ROTxyz = [0,0,0]
     err_int_VACxyz = [0,0,0]
 
-    aswconstraints(linear_acceleration, angular_acceleration, velocity,
+    Constraints(linear_acceleration, angular_acceleration, velocity,
         rotation_rate, position, phi, theta, psi, flap_defl_ctrl_var,
         eng_pwr_ctrl_var, err_int_Vinf, err_int_beta, err_int_alpha,
         err_int_phi, err_int_theta, err_int_psi, err_int_ROTxyz, err_int_VACxyz)
 end
 
 """
-    aswparameters(;
-        linear_acceleration::AbstractArray{<:Real,1} = zeros(Float64,3),
-        angular_acceleration::AbstractArray{<:Real,1} = zeros(Float64,3),
+    Parameters(;
+        linear_acceleration::AbstractArray{<:Real,1} = zeros(R,3),
+        angular_acceleration::AbstractArray{<:Real,1} = zeros(R,3),
         velocity::Real = 0.0,
         beta::Real = 0.0,
         alpha::Real = 0.0,
-        rotation_rate::AbstractArray{<:Real,1} = zeros(Float64,3),
-        position::AbstractArray{<:Real,1} = zeros(Float64,3),
+        rotation_rate::AbstractArray{<:Real,1} = zeros(R,3),
+        position::AbstractArray{<:Real,1} = zeros(R,3),
         phi::Real = 0.0,
         theta::Real = 0.0,
         psi::Real = 0.0,
-        flap_defl_ctrl_var::AbstractArray{<:Real,1} = zeros(Float64,NFLPX),
-        eng_pwr_ctrl_var::AbstractArray{<:Real,1} = zeros(Float64,NENGX),
-        sum_force::AbstractArray{<:Real,1} = zeros(Float64,3),
-        sum_mom::AbstractArray{<:Real,1} = zeros(Float64,3),
+        flap_defl_ctrl_var::AbstractArray{<:Real,1} = zeros(R,NFLPX),
+        eng_pwr_ctrl_var::AbstractArray{<:Real,1} = zeros(R,NENGX),
+        sum_force::AbstractArray{<:Real,1} = zeros(R,3),
+        sum_mom::AbstractArray{<:Real,1} = zeros(R,3),
         lift::Real = 0.0,
         climb_angle::Real = 0.0,
         radial_acceleration::Real = 0.0,
@@ -196,49 +196,41 @@ end
 
     Defines operating point parameters as done within ASWING.
 """
-struct aswparameters
-    linear_acceleration::Array{Float64,1}
-    angular_acceleration::Array{Float64,1}
-    velocity::Float64
-    beta::Float64
-    alpha::Float64
-    rotation_rate::Array{Float64,1}
-    position::Array{Float64}
-    phi::Float64
-    theta::Float64
-    psi::Float64
-    flap_defl_ctrl_var::Array{Float64,1}
-    eng_pwr_ctrl_var::Array{Float64,1}
-    sum_force::Array{Float64,1}
-    sum_mom::Array{Float64,1}
-    lift::Float64
-    climb_angle::Float64
-    radial_acceleration::Float64
-    usr1::Float64
-    usr2::Float64
-    least_squared::Float64
-    function aswparameters(;
-        linear_acceleration::AbstractArray{<:Real,1} = zeros(Float64,3),
-        angular_acceleration::AbstractArray{<:Real,1} = zeros(Float64,3),
-        velocity::Real = 0.0,
-        beta::Real = 0.0,
-        alpha::Real = 0.0,
-        rotation_rate::AbstractArray{<:Real,1} = zeros(Float64,3),
-        position::AbstractArray{<:Real,1} = zeros(Float64,3),
-        phi::Real = 0.0,
-        theta::Real = 0.0,
-        psi::Real = 0.0,
-        flap_defl_ctrl_var::AbstractArray{<:Real,1} = zeros(Float64,NFLPX),
-        eng_pwr_ctrl_var::AbstractArray{<:Real,1} = zeros(Float64,NENGX),
-        sum_force::AbstractArray{<:Real,1} = zeros(Float64,3),
-        sum_mom::AbstractArray{<:Real,1} = zeros(Float64,3),
-        lift::Real = 0.0,
-        climb_angle::Real = 0.0,
-        radial_acceleration::Real = 0.0,
-        usr1::Real = 0.0,
-        usr2::Real = 0.0,
-        least_squared::Real = 0.0
-        )
+struct Parameters{R<:Real}
+    linear_acceleration::Array{R,1}
+    angular_acceleration::Array{R,1}
+    velocity::R
+    beta::R
+    alpha::R
+    rotation_rate::Array{R,1}
+    position::Array{R}
+    phi::R
+    theta::R
+    psi::R
+    flap_defl_ctrl_var::Array{R,1}
+    eng_pwr_ctrl_var::Array{R,1}
+    sum_force::Array{R,1}
+    sum_mom::Array{R,1}
+    lift::R
+    climb_angle::R
+    radial_acceleration::R
+    usr1::R
+    usr2::R
+    least_squared::R
+    function (::Type{Parameters{R}})(
+        linear_acceleration::AbstractArray{<:Real,1},
+        angular_acceleration::AbstractArray{<:Real,1},
+        velocity::Real, beta::Real, alpha::Real,
+        rotation_rate::AbstractArray{<:Real,1},
+        position::AbstractArray{<:Real,1},
+        phi::Real, theta::Real, psi::Real,
+        flap_defl_ctrl_var::AbstractArray{<:Real,1},
+        eng_pwr_ctrl_var::AbstractArray{<:Real,1},
+        sum_force::AbstractArray{<:Real,1},
+        sum_mom::AbstractArray{<:Real,1},
+        lift::Real, climb_angle::Real, radial_acceleration::Real,
+        usr1::Real, usr2::Real, least_squared::Real) where R<:Real
+
         if ((length(linear_acceleration) != 3) || (length(angular_acceleration) != 3) ||
             (length(rotation_rate) != 3) ||
             (length(position) != 3) || (length(flap_defl_ctrl_var) != NFLPX) ||
@@ -246,42 +238,133 @@ struct aswparameters
             (length(sum_mom) != 3))
             error("One or more input arrays are not the correct dimensions")
         end
-        new(linear_acceleration, angular_acceleration, velocity, beta, alpha,
+
+        new{R}(linear_acceleration, angular_acceleration, velocity, beta, alpha,
             rotation_rate, position, phi, theta, psi, flap_defl_ctrl_var,
             eng_pwr_ctrl_var, sum_force, sum_mom,lift, climb_angle,
             radial_acceleration, usr1, usr2, least_squared)
     end
 end
 
+function Parameters(;
+    linear_acceleration::AbstractArray{<:Real,1} = zeros(Float64,3),
+    angular_acceleration::AbstractArray{<:Real,1} = zeros(Float64,3),
+    velocity::Real = 0.0,
+    beta::Real = 0.0,
+    alpha::Real = 0.0,
+    rotation_rate::AbstractArray{<:Real,1} = zeros(Float64,3),
+    position::AbstractArray{<:Real,1} = zeros(Float64,3),
+    phi::Real = 0.0,
+    theta::Real = 0.0,
+    psi::Real = 0.0,
+    flap_defl_ctrl_var::AbstractArray{<:Real,1} = zeros(Float64,NFLPX),
+    eng_pwr_ctrl_var::AbstractArray{<:Real,1} = zeros(Float64,NENGX),
+    sum_force::AbstractArray{<:Real,1} = zeros(Float64,3),
+    sum_mom::AbstractArray{<:Real,1} = zeros(Float64,3),
+    lift::Real = 0.0,
+    climb_angle::Real = 0.0,
+    radial_acceleration::Real = 0.0,
+    usr1::Real = 0.0,
+    usr2::Real = 0.0,
+    least_squared::Real = 0.0)
+
+    if ((length(linear_acceleration) != 3) || (length(angular_acceleration) != 3) ||
+        (length(rotation_rate) != 3) ||
+        (length(position) != 3) || (length(flap_defl_ctrl_var) != NFLPX) ||
+        (length(eng_pwr_ctrl_var) != NENGX) || (length(sum_force) != 3) ||
+        (length(sum_mom) != 3))
+        error("One or more input arrays are not the correct dimensions")
+    end
+
+    Parameters{Float64}(linear_acceleration, angular_acceleration, velocity, beta, alpha,
+        rotation_rate, position, phi, theta, psi, flap_defl_ctrl_var,
+        eng_pwr_ctrl_var, sum_force, sum_mom,lift, climb_angle,
+        radial_acceleration, usr1, usr2, least_squared)
+end
+
+function (::Type{Parameters{R}})(;
+    linear_acceleration::AbstractArray{<:Real,1} = zeros(R,3),
+    angular_acceleration::AbstractArray{<:Real,1} = zeros(R,3),
+    velocity::Real = 0.0,
+    beta::Real = 0.0,
+    alpha::Real = 0.0,
+    rotation_rate::AbstractArray{<:Real,1} = zeros(R,3),
+    position::AbstractArray{<:Real,1} = zeros(R,3),
+    phi::Real = 0.0,
+    theta::Real = 0.0,
+    psi::Real = 0.0,
+    flap_defl_ctrl_var::AbstractArray{<:Real,1} = zeros(R,NFLPX),
+    eng_pwr_ctrl_var::AbstractArray{<:Real,1} = zeros(R,NENGX),
+    sum_force::AbstractArray{<:Real,1} = zeros(R,3),
+    sum_mom::AbstractArray{<:Real,1} = zeros(R,3),
+    lift::Real = 0.0,
+    climb_angle::Real = 0.0,
+    radial_acceleration::Real = 0.0,
+    usr1::Real = 0.0,
+    usr2::Real = 0.0,
+    least_squared::Real = 0.0
+    ) where R<:Real
+
+    if ((length(linear_acceleration) != 3) || (length(angular_acceleration) != 3) ||
+        (length(rotation_rate) != 3) ||
+        (length(position) != 3) || (length(flap_defl_ctrl_var) != NFLPX) ||
+        (length(eng_pwr_ctrl_var) != NENGX) || (length(sum_force) != 3) ||
+        (length(sum_mom) != 3))
+        error("One or more input arrays are not the correct dimensions")
+    end
+
+    Parameters{R}(linear_acceleration, angular_acceleration, velocity, beta, alpha,
+        rotation_rate, position, phi, theta, psi, flap_defl_ctrl_var,
+        eng_pwr_ctrl_var, sum_force, sum_mom,lift, climb_angle,
+        radial_acceleration, usr1, usr2, least_squared)
+end
+
+
+
 """
-    operatingpoint(;
-        constraints::aswconstraints=aswconstraints(),
+    OperatingPoint(;
+        constraints::Constraints=Constraints(),
         mach_from_airspeed::Bool = false,
         machpg::Real = 0.0,
         ground_image::Real = 0,
-        parameters::aswparameters = aswparameters(),
-        wflap::AbstractArray{<:Real,1} = ones(Float64,NFLPX),
-        wpeng::AbstractArray{<:Real,1} = ones(Float64,NENGX))
+        parameters::Parameters = Parameters(),
+        wflap::AbstractArray{<:Real,1} = ones(R,NFLPX),
+        wpeng::AbstractArray{<:Real,1} = ones(R,NENGX))
 
     contains operating point inputs
 """
-struct operatingpoint
-    constraints::aswconstraints # Solution constraints
+struct OperatingPoint{R<:Real}
+    constraints::Constraints # Solution constraints
     mach_from_airspeed::Bool # Set Prandtl-Glauert Mach based on airspeed?
-    machpg::Float64 # Prandtl-Glauert Mach
-    ground_image::Int32 # ground image flag, 0 no image,+1 solid ground, -1 free surface (anti-image)
-    parameters::aswparameters
-    wflap::Array{Float64,1} # flap weights for least squared constraint
-    wpeng::Array{Float64,1} # engine weights for least squared constraint
+    machpg::R # Prandtl-Glauert Mach
+    ground_image::Int # ground image flag, 0 no image,+1 solid ground, -1 free surface (anti-image)
+    parameters::Parameters{R}
+    wflap::Array{R,1} # flap weights for least squared constraint
+    wpeng::Array{R,1} # engine weights for least squared constraint
 end
-function operatingpoint(;
-    constraints::aswconstraints=aswconstraints(),
+
+function OperatingPoint(;
+    constraints::Constraints=Constraints(),
     mach_from_airspeed::Bool = false,
     machpg::Real = 0.0,
     ground_image::Real = 0,
-    parameters::aswparameters = aswparameters(),
+    parameters::Parameters = Parameters{Float64}(),
     wflap::AbstractArray{<:Real,1} = ones(Float64,NFLPX),
     wpeng::AbstractArray{<:Real,1} = ones(Float64,NENGX))
-    operatingpoint(constraints, mach_from_airspeed, machpg, ground_image,
+
+    OperatingPoint{Float64}(constraints, mach_from_airspeed, machpg, ground_image,
+        parameters, wflap, wpeng)
+end
+
+function OperatingPoint{R}(;
+    constraints::Constraints=Constraints(),
+    mach_from_airspeed::Bool = false,
+    machpg::Real = 0.0,
+    ground_image::Real = 0,
+    parameters::Parameters = Parameters{R}(),
+    wflap::AbstractArray{<:Real,1} = ones(R,NFLPX),
+    wpeng::AbstractArray{<:Real,1} = ones(R,NENGX)) where {R<:Real}
+
+    OperatingPoint{R}(constraints, mach_from_airspeed, machpg, ground_image,
         parameters, wflap, wpeng)
 end

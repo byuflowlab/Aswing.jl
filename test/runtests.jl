@@ -24,14 +24,14 @@ newasw = Aswing.readasw(outputasw)
     @test asw.si_units == newasw.si_units
     @test asw.constants == newasw.constants
     @testset "reference values" begin
-        for field in fieldnames(Aswing.aswrefs)
+        for field in fieldnames(Aswing.ReferenceValues)
             @test getfield(asw.refvals, field) ==
                 getfield(newasw.refvals, field)
         end
     end
     @testset "weights" begin
         for i = 1:length(asw.weights)
-            for field in fieldnames(Aswing.aswweight)
+            for field in fieldnames(Aswing.Weight)
                 @test getfield(asw.weights[i], field) ==
                     getfield(newasw.weights[i], field)
             end
@@ -39,7 +39,7 @@ newasw = Aswing.readasw(outputasw)
     end
     @testset "sensors" begin
         for i = 1:length(asw.sensors)
-            for field in fieldnames(Aswing.aswsensor)
+            for field in fieldnames(Aswing.Sensor)
                 @test getfield(asw.sensors[i], field) ==
                     getfield(newasw.sensors[i], field)
             end
@@ -47,7 +47,7 @@ newasw = Aswing.readasw(outputasw)
     end
     @testset "engines" begin
         for i = 1:length(asw.engines)
-            for field in fieldnames(Aswing.aswengine)
+            for field in fieldnames(Aswing.Engine)
                 @test getfield(asw.engines[i], field) ==
                     getfield(newasw.engines[i], field)
             end
@@ -62,7 +62,7 @@ newasw = Aswing.readasw(outputasw)
             asw.beams[i].number == newasw.beams[i].number
             asw.beams[i].physical_index == newasw.beams[i].physical_index
             asw.beams[i].name == newasw.beams[i].name
-            for field in fieldnames(Aswing.aswbeamspanwise)
+            for field in fieldnames(Aswing.SpanwiseVariables)
                 @test isapprox(getfield(asw.beams[i].spanwise_variables, field),
                     getfield(newasw.beams[i].spanwise_variables, field))
             end
@@ -74,13 +74,13 @@ newpnt = Aswing.readpnt(outputpnt)
 @testset "pnt" begin
     for i = 1:length(pnt)
         @testset "constraints" begin
-            for field in fieldnames(Aswing.aswconstraints)
+            for field in fieldnames(Aswing.Constraints)
                 @test getfield(pnt[i].constraints, field) ==
                     getfield(newpnt[i].constraints, field)
             end
         end
         @testset "parameters" begin
-            for field in fieldnames(Aswing.aswparameters)
+            for field in fieldnames(Aswing.Parameters)
                 @test getfield(pnt[i].parameters, field) ==
                     getfield(newpnt[i].parameters, field)
             end
@@ -95,11 +95,11 @@ end
 
 # test steady solution
 steady_solution = Aswing.solvesteady(1)
-@test round(steady_solution.pnt_param.lift_force/
-         steady_solution.pnt_param.drag_force, digits = 2) == 33.65
+@test isapprox(steady_solution.pnt_param.lift_force/steady_solution.pnt_param.drag_force,
+    33.65, atol=0.1)
 
 # get stability derivatives
-stabderivs = Aswing.getstabderivs()
+stabderivs = Aswing.getstabilityderivatives(1)
 @testset "stabderivs" begin
     @test isapprox(stabderivs.CXu, -0.03647, atol=1e-4)
     @test isapprox(stabderivs.CYu, 0.0, atol=1e-4)
@@ -145,34 +145,40 @@ stabderivs = Aswing.getstabderivs()
     @test isapprox(stabderivs.CLdP, [-0.000104], atol=1e-4)
 end
 
-sm, fail = Aswing.getstaticmargin(1)
-@test isapprox(sm, 25.66, atol=1e-2)
-
-# test unsteady solution
-Aswing.retainparam()
-constraints_unsteady = Aswing.aswconstraints("free")
-Aswing.setcons(constraints_unsteady)
-unsteady_solution = Aswing.solveunsteady(0.1, 10)
-@test round(unsteady_solution[11].pnt_param.lift_force/
-         unsteady_solution[11].pnt_param.drag_force, digits = 2) == 33.86
-
-# test eigenvalues
-asweigs = Aswing.geteigs(16, -0.1+0.0im, 1)
-@test length(asweigs) == 7
-@test round(asweigs[1], digits = 3) == -0.019+0.0im
-@test round(asweigs[2], digits = 3) == -0.02+0.316im
-@test round(asweigs[3], digits = 3) == -0.512+1.52im
-@test round(asweigs[4], digits = 3) == -6.873+0.0im
-@test round(asweigs[5], digits = 3) == -3.815+6.314im
-@test round(asweigs[6], digits = 3) == -8.773+8.553im
-@test round(asweigs[7], digits = 3) == -11.774+7.353im
-
 # test setting new paneling
 newintervals = [Aswing.getintervals(i) for i  in 1:4]*2
 Aswing.nodeset(newintervals)
 @test all(newintervals .== [Aswing.getintervals(i) for i in 1:4])
 
-# make sure solution remains relatively constant
+# make sure solution remains similar
 steady_solution = Aswing.solvesteady(1)
-@test round(steady_solution.pnt_param.lift_force/
-      steady_solution.pnt_param.drag_force, digits = 1) == 33.8
+@test isapprox(steady_solution.pnt_param.lift_force/steady_solution.pnt_param.drag_force,
+    33.65, atol=0.1)
+
+# get static margin (note that this is using the increased paneling)
+sm_qs, sm_rigid, fail = Aswing.getstaticmargin(1)
+@test isapprox(sm_qs, 26.2352, atol=1e-1)
+@test isapprox(sm_rigid, 31.48, atol=1e-1)
+
+# recover from static margin test (and restore normal paneling)
+Aswing.setgeom(asw)
+Aswing.setpnt(pnt)
+steady_solution = Aswing.solvesteady(1)
+
+# set up and test unsteady solution
+Aswing.retainparam()
+Aswing.setcons(Aswing.Constraints("free"))
+unsteady_solution = Aswing.solveunsteady(0.1, 10)
+@test isapprox(unsteady_solution[11].pnt_param.lift_force/unsteady_solution[11].pnt_param.drag_force,
+    33.65, atol=0.1)
+
+# test eigenvalues
+asweigs = Aswing.geteigs(16, -0.1+0.0im, 1)
+@test length(asweigs) == 7
+@test isapprox(asweigs[1],  -0.0259 + 0.0000im, atol = 1e-3)
+@test isapprox(asweigs[2],  -0.0169 + 0.4249im, atol = 1e-3)
+@test isapprox(asweigs[3],  -0.5283 + 1.5259im, atol = 1e-3)
+@test isapprox(asweigs[4],  -7.0504 + 0.0000im, atol = 1e-3)
+@test isapprox(asweigs[5],  -3.8156 + 6.2790im, atol = 1e-3)
+@test isapprox(asweigs[6],  -8.7304 + 8.5861im, atol = 1e-3)
+@test isapprox(asweigs[7], -11.7465 + 7.3447im, atol = 1e-3)
