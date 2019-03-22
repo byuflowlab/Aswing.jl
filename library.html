@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Library · Aswing</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link href="assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Aswing</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="index.html">Home</a></li><li><a class="toctext" href="install.html">Installation</a></li><li><a class="toctext" href="example.html">Example Usage</a></li><li class="current"><a class="toctext" href="library.html">Library</a><ul class="internal"><li><a class="toctext" href="#Public-API-1">Public API</a></li><li><a class="toctext" href="#Internal-API-1">Internal API</a></li></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href="library.html">Library</a></li></ul><a class="edit-page" href="https://github.com/byuflowlab/Aswing.jl/blob/master/docs/src/library.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Library</span><a class="fa fa-bars" href="#"></a></div></header><h2><a class="nav-anchor" id="Public-API-1" href="#Public-API-1">Public API</a></h2><h2><a class="nav-anchor" id="Internal-API-1" href="#Internal-API-1">Internal API</a></h2><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.aswsav-Tuple{Any}" href="#Aswing.aswsav-Tuple{Any}"><code>Aswing.aswsav</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">aswsav(file)
+Saves ASWING geometry state to a file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L3-L6">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.conadd-NTuple{5,Any}" href="#Aswing.conadd-NTuple{5,Any}"><code>Aswing.conadd</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">conadd(i,j,ls,gfac,c)
+Sets up a proportional control law</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L479-L482">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.conclr-Tuple{}" href="#Aswing.conclr-Tuple{}"><code>Aswing.conclr</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">conclr()
+Clears all control laws</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L463-L466">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.freeze" href="#Aswing.freeze"><code>Aswing.freeze</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">freeze(ipoint = 1)
+Freezes geometry at current state</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L360-L363">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.geteigs-Tuple{Any,Any,Any}" href="#Aswing.geteigs-Tuple{Any,Any,Any}"><code>Aswing.geteigs</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">geteigs(neigen, zshift, ipnt; evmin = 1e-4, evtol = 1e-3)
+Returns eigenvalues of the system</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L389-L392">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.getintervals-Tuple{Integer}" href="#Aswing.getintervals-Tuple{Integer}"><code>Aswing.getintervals</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">getintervals(ibeam::Integer)
+Gets number of panels between each break point</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L508-L511">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.getstabilityderivatives" href="#Aswing.getstabilityderivatives"><code>Aswing.getstabilityderivatives</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">getstabilityderivatives(ipnt = 1, momref=Float64[])
+Calculates stability derivatives</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L426-L429">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.getstaticmargin" href="#Aswing.getstaticmargin"><code>Aswing.getstaticmargin</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">getstaticmargin(ipnt::Integer=1)
+
+Returns quasi-steady static margin, rigidized static margin, and a solution
+failure flag.  Assumes constraints are set up for trimmed flight and follows
+the instructions in derivative_calc.txt. This function performs irreversible
+changes so you will need to re-input the geometry afterwards.</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L598-L605">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.isinline-Tuple{Any,Any,Any}" href="#Aswing.isinline-Tuple{Any,Any,Any}"><code>Aswing.isinline</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">isinline(line, stringtofind, range)
+
+checks for string within line, used in readasw</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L436-L440">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.nodeset-Tuple{Integer,Integer}" href="#Aswing.nodeset-Tuple{Integer,Integer}"><code>Aswing.nodeset</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">nodeset(ibeam::Integer, nnodes::Integer)
+nodeset(intervals::AbstractArray{&lt;:AbstractArray{&lt;:Integer, 1},1})
+
+Sets new number of nodes for ibeam.  A custom number of panels can be used
+between break points.</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L530-L536">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.parseblock-NTuple{4,Any}" href="#Aswing.parseblock-NTuple{4,Any}"><code>Aswing.parseblock</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">parseblock(f, line, nvalue, skip)
+
+parses common input blocks, used in readasw</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L384-L388">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.pntsav" href="#Aswing.pntsav"><code>Aswing.pntsav</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">pntsav(file, ipnt1=1, ipnt2=ASWING.NPOINT)
+Saves ASWING operating point state to a file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L31-L34">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.readasw-Tuple{String}" href="#Aswing.readasw-Tuple{String}"><code>Aswing.readasw</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">readasw(filename::String)
+
+Reads a .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L84-L88">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.readpnt-Tuple{String}" href="#Aswing.readpnt-Tuple{String}"><code>Aswing.readpnt</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">readpnt(filename::String)
+
+Reads a .pnt file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L449-L453">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.retainparam-Tuple{Integer,Integer}" href="#Aswing.retainparam-Tuple{Integer,Integer}"><code>Aswing.retainparam</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">retainparam()
+retainparam(ipnt1::Integer)
+retainparam(ipnt1::Integer, ipnt2::Integer)
+Sets operating point parameters equivalent to those of the current state</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L340-L345">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.setcons" href="#Aswing.setcons"><code>Aswing.setcons</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">setcons(pnt::dotpnt,ipnt=1)
+Inputs operating points contraints into ASWING</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L209-L212">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.setgeom-Tuple{Aswing.Configuration}" href="#Aswing.setgeom-Tuple{Aswing.Configuration}"><code>Aswing.setgeom</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">setgeom(asw::Configuration)
+
+Inputs geometry into ASWING</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L3-L7">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.setgust" href="#Aswing.setgust"><code>Aswing.setgust</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">setgust(igust::Integer, params::AbstractArray{&lt;:Real}=[-4.0,0.0,1.0,8.0,2.0,0.0])
+Sets gust type and corresponding parameters</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L374-L377">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.setpars" href="#Aswing.setpars"><code>Aswing.setpars</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">setpars(parameters, ipnt::Integer=1)
+Sets operating point parameters into ASWING</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L258-L261">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.setpnt-Tuple{AbstractArray{Aswing.OperatingPoint,1}}" href="#Aswing.setpnt-Tuple{AbstractArray{Aswing.OperatingPoint,1}}"><code>Aswing.setpnt</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">setpnt(point)
+Inputs operating point(s) into ASWING</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L178-L181">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.setsav-Tuple{Any}" href="#Aswing.setsav-Tuple{Any}"><code>Aswing.setsav</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">setsav(file)
+Saves ASWING operating point state to a file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/io.jl#L58-L61">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.solvesteady-Tuple{Integer,Integer}" href="#Aswing.solvesteady-Tuple{Integer,Integer}"><code>Aswing.solvesteady</code></a> — <span class="docstring-category">Method</span>.</div><div><div><pre><code class="language-none">solvesteady(;repeat::Integer=0)
+solvesteady(ipnt1::Integer; repeat::Integer=0)
+solvesteady(ipnt1::Integer, ipnt2::Integer; repeat::Integer=0)
+
+Quasi-steady ASWING solve. If no arguments are specified, all points are
+solved.</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L294-L301">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.solveunsteady" href="#Aswing.solveunsteady"><code>Aswing.solveunsteady</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">solveunsteady(deltat::Real, ntimes::Integer)
+Unsteady ASWING time-domain solve</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/main.jl#L323-L326">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Beam" href="#Aswing.Beam"><code>Aswing.Beam</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Beam(;number::Integer = 0, physical_index::Integer = 0, name::String = &quot;&quot;,
+    spanwise_variables::SpanwiseVariables = SpanwiseVariables())
+
+Returns struct defining a beam as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L901-L906">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Configuration" href="#Aswing.Configuration"><code>Aswing.Configuration</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Configuration
+
+Returns struct containing contents of .asw configuration file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L932-L936">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Constants" href="#Aswing.Constants"><code>Aswing.Constants</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Constants(;
+    sea_level_air_density::Real = 1.225,
+    sea_level_speed_of_sound::Real = 340.2778,
+    gravity::Real = 9.81)
+
+Returns struct containing constants as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L6-L13">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Constraints" href="#Aswing.Constraints"><code>Aswing.Constraints</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Constraints(mode::String)
+Constraints(;
+    linear_acceleration::AbstractArray{&lt;:Integer,1} =
+        -[dparam[&quot;accel_x&quot;],dparam[&quot;accel_y&quot;],dparam[&quot;accel_z&quot;]],
+    angular_acceleration::AbstractArray{&lt;:Integer,1} =
+        -[dparam[&quot;ang_accel_x&quot;],dparam[&quot;ang_accel_y&quot;],dparam[&quot;ang_accel_z&quot;]],
+    velocity::AbstractArray{&lt;:Integer,1} =
+        -[dparam[&quot;velocity&quot;],dparam[&quot;beta&quot;],dparam[&quot;alpha&quot;]],
+    rotation_rate::AbstractArray{&lt;:Integer,1} =
+        -[dparam[&quot;ang_vel_x&quot;],dparam[&quot;ang_vel_y&quot;],dparam[&quot;ang_vel_z&quot;]],
+    position::AbstractArray{&lt;:Integer,1} =
+        -[dparam[&quot;position_x&quot;],dparam[&quot;position_y&quot;],dparam[&quot;position_z&quot;]],
+    phi::Integer = -dparam[&quot;roll&quot;],
+    theta::Integer = -dparam[&quot;pitch&quot;],
+    psi::Integer = -dparam[&quot;yaw&quot;],
+    flap_defl_ctrl_var::AbstractArray{&lt;:Integer,1} =
+        -(dparam[&quot;flap_1&quot;]:(dparam[&quot;flap_1&quot;]-1+NFLPX)),
+    eng_pwr_ctrl_var::AbstractArray{&lt;:Integer,1} =
+        -(dparam[&quot;eng_1&quot;]:(dparam[&quot;eng_1&quot;]-1+NENGX))
+    err_int_Vinf::Integer = dparam[&quot;velocity&quot;],
+    err_int_beta::Integer = dparam[&quot;beta&quot;],
+    err_int_alpha::Integer = dparam[&quot;alpha&quot;],
+    err_int_phi::Integer = dparam[&quot;ang_vel_x&quot;],
+    err_int_theta::Integer = dparam[&quot;ang_vel_y&quot;],
+    err_int_psi::Integer = dparam[&quot;ang_vel_z&quot;],
+    err_int_ROTxyz::AbstractArray{&lt;:Integer,1} = [0,0,0],
+    err_int_VACxyz::AbstractArray{&lt;:Integer,1} = [0,0,0])
+
+Defines operating point constraints as done within ASWING.
+Implemented modes: [&quot;default&quot;, &quot;anchored&quot;, &quot;free&quot;, &quot;static&quot;]</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/pnt.jl#L25-L56">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Engine" href="#Aswing.Engine"><code>Aswing.Engine</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Engine(;Keng::Integer=0, IEtyp::Integer=0, Nbeam::Integer=0,
+    t::Real=0.0, location::AbstractArray{&lt;:Real,1}=zeros(R,3),
+    thrust_direction::AbstractArray{&lt;:Real,1}=zeros(R,3), dFdPe::Real=0.0,
+    dMdPe::Real=0.0, Rdisk::Real=0.0, Omega::Real=0.0, cdA::Real=0.0,
+    cl::Real=0.0, CLa::Real=0.0, S0::Real=0.0, C0::Real=0.0, S1::Real=0.0,
+    C1::Real=0.0, S2::Real=0.0, C2::Real=0.0, S3::Real=0.0, C3::Real=0.0)
+
+Returns struct defining a single engine as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L205-L214">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Ground" href="#Aswing.Ground"><code>Aswing.Ground</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Ground(;Nbeam::Integer=0, t::Real=0.0, KGtype::Integer=0)
+
+Returns struct defining a single ground as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L403-L407">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Jangle" href="#Aswing.Jangle"><code>Aswing.Jangle</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Jangle(;Njoint::Integer=0,
+    hinge_axis::AbstractArray{&lt;:Real,1} = zeros(R, 3),
+    hinge_moment::AbstractArray{&lt;:Real,1} = zeros(1),
+    hinge_angle::AbstractArray{&lt;:Real,1} = zeros(1))
+
+Returns struct defining a single jangle as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L362-L369">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Joint" href="#Aswing.Joint"><code>Aswing.Joint</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Joint(;Nbeam1::Integer=0, Nbeam2::Integer=0, t1::Real=0.0,
+    t2::Real=0.0, KJtype::Integer=0)
+
+Returns struct defining a single joint as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L336-L341">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.OperatingPoint" href="#Aswing.OperatingPoint"><code>Aswing.OperatingPoint</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">OperatingPoint(;
+    constraints::Constraints=Constraints(),
+    mach_from_airspeed::Bool = false,
+    machpg::Real = 0.0,
+    ground_image::Real = 0,
+    parameters::Parameters = Parameters(),
+    wflap::AbstractArray{&lt;:Real,1} = ones(R,NFLPX),
+    wpeng::AbstractArray{&lt;:Real,1} = ones(R,NENGX))
+
+contains operating point inputs</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/pnt.jl#L324-L335">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Parameters" href="#Aswing.Parameters"><code>Aswing.Parameters</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Parameters(;
+    linear_acceleration::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    angular_acceleration::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    velocity::Real = 0.0,
+    beta::Real = 0.0,
+    alpha::Real = 0.0,
+    rotation_rate::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    position::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    phi::Real = 0.0,
+    theta::Real = 0.0,
+    psi::Real = 0.0,
+    flap_defl_ctrl_var::AbstractArray{&lt;:Real,1} = zeros(R,NFLPX),
+    eng_pwr_ctrl_var::AbstractArray{&lt;:Real,1} = zeros(R,NENGX),
+    sum_force::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    sum_mom::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    lift::Real = 0.0,
+    climb_angle::Real = 0.0,
+    radial_acceleration::Real = 0.0,
+    usr1::Real = 0.0,
+    usr2::Real = 0.0,
+    least_squared::Real = 0.0)
+
+Defines operating point parameters as done within ASWING.</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/pnt.jl#L174-L198">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.ReferenceValues" href="#Aswing.ReferenceValues"><code>Aswing.ReferenceValues</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">ReferenceValues(;area::Real = 1.0, chord::Real = 1.0, span::Real = 1.0,
+    momref::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    velref::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    accelref::AbstractArray{&lt;:Real,1} = zeros(R,3))
+
+Returns struct containing reference values as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L36-L43">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Sensor" href="#Aswing.Sensor"><code>Aswing.Sensor</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Sensor(;Ksens::Integer = 0, Nbeam::Integer = 0, t::Real=0.0,
+    location::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    V::AbstractArray{&lt;:Real,1} = zeros(R,3),
+    A::AbstractArray{&lt;:Real,1} = zeros(R,3))
+
+Returns struct defining a single sensor as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L149-L156">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.SpanwiseVariables" href="#Aswing.SpanwiseVariables"><code>Aswing.SpanwiseVariables</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">SpanwiseVariables(; &lt;keyword arguments&gt;)
+
+Returns struct defining the spanwise properties of a beam as defined in
+    .asw file
+The first column of each variable is the t-value
+The second column is the variable value corresponding to that t-value</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L422-L429">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Strut" href="#Aswing.Strut"><code>Aswing.Strut</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Strut(;Nbeam::Integer=0, t::Real=0.0,
+    location::AbstractArray{&lt;:Real,1}=zeros(R,3),
+    anchor_location::AbstractArray{&lt;:Real,1}=zeros(R,3), dLo::Real=0.0,
+    EAw::Real=0.0)
+
+Returns struct defining a single strut as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L292-L299">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Aswing.Weight" href="#Aswing.Weight"><code>Aswing.Weight</code></a> — <span class="docstring-category">Type</span>.</div><div><div><pre><code class="language-none">Weight(;Nbeam::Integer=0, t::Real=0.0,
+    location::AbstractArray{&lt;:Real,1}=zeros(R,3), weight::Real=0.0,
+    CDA::Real=0.0, vol::Real=0.0, Ho::AbstractArray{&lt;:Real,1}=zeros(R,3),
+    Ixx::Real=0, Iyy::Real=0, Izz::Real=0, Ixy::Real=0, Ixz::Real=0, Iyz::Real=0)
+
+Returns struct defining a single point mass as defined in .asw file</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/byuflowlab/Aswing.jl/blob/9c3923415b3c302576a70b45c650f72c3bb4812c/src/geom.jl#L86-L93">source</a></section><footer><hr/><a class="previous" href="example.html"><span class="direction">Previous</span><span class="title">Example Usage</span></a></footer></article></body></html>
