@@ -1,7 +1,7 @@
 # defines operating points used in ASWING
 
 # Dictionary of pointers to parameters
-const dparam = Dict{String,Int32}("accel_x"=>IPVACX, "accel_y"=>IPVACY,
+const dparam = Dict{String,Int}("accel_x"=>IPVACX, "accel_y"=>IPVACY,
 "accel_z" =>  IPVACZ, "ang_accel_x" => IPRACX, "ang_accel_y" =>  IPRACY,
 "ang_accel_z" =>  IPRACZ, "velocity" =>  IPVIAS, "beta" =>  IPBETA,
 "alpha" =>  IPALFA, "ang_vel_x" => IPROTX, "ang_vel_y" => IPROTY,
