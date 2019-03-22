@@ -86,16 +86,16 @@ end
 
     Reads a .asw file
 """
-function readasw(filename::String)
+function readasw(filename::String, R::Type{<:Real} = Float64)
     local aswname, si_units, constants, refvals
-    sensors = Sensor{Float64}[]
-    engines = Engine{Float64}[]
-    weights = Weight{Float64}[]
-    struts = Strut{Float64}[]
-    joints = Joint{Float64}[]
-    jangles = Jangle{Float64}[]
-    grounds = Ground{Float64}[]
-    beams = Beam{Float64}[]
+    sensors = Sensor{R}[]
+    engines = Engine{R}[]
+    weights = Weight{R}[]
+    struts = Strut{R}[]
+    joints = Joint{R}[]
+    jangles = Jangle{R}[]
+    grounds = Ground{R}[]
+    beams = Beam{R}[]
     # Open File
     f = open(filename)
     line = 0
@@ -151,7 +151,7 @@ function readasw(filename::String)
             nvalue = 3
             skip = 0
             constin, line = parseblock(f, line, nvalue, skip)
-            constants = Constants(;
+            constants = Constants{R}(;
                 gravity = constin[1],
                 sea_level_air_density = constin[2],
                 sea_level_speed_of_sound = constin[3])
@@ -164,16 +164,16 @@ function readasw(filename::String)
             area = refin[1,1]
             chord = refin[1,2]
             span = refin[1,3]
-            moments = zeros(Float64,3)
-            accelerations = zeros(Float64,3)
-            velocities = zeros(Float64,3)
+            moments = zeros(R,3)
+            accelerations = zeros(R,3)
+            velocities = zeros(R,3)
             for i = 1:3
                 moments[i] = refin[2,i]
                 accelerations[i] = refin[3,i]
                 velocities[i] = refin[4,i]
             end
-            refvals = ReferenceValues(area, chord, span,
-                moments, accelerations, velocities)
+            refvals = ReferenceValues{R}(area, chord, span, moments, accelerations,
+                velocities)
             # Check for and read sensor block
         elseif isinline(lowercase(str), "sens", 1:4)
             # println("Reading Sensor Values")
@@ -181,7 +181,7 @@ function readasw(filename::String)
             skip = 2
             sensin,line = parseblock(f, line, nvalue, skip)
             for i = 1:size(sensin,1)
-                sensor = Sensor{Float64}(Int(sensin[i,1]), Int(sensin[i,2]), sensin[i,3],
+                sensor = Sensor{R}(Int(sensin[i,1]), Int(sensin[i,2]), sensin[i,3],
                     [sensin[i,4], sensin[i,5], sensin[i,6]],
                     [sensin[i,7], sensin[i,8], sensin[i,9]],
                     [sensin[i,10], sensin[i,11], sensin[i,12]])
@@ -194,7 +194,7 @@ function readasw(filename::String)
             skip = 3
             enginein, line = parseblock(f, line, nvalue, skip)
             for i = 1:size(enginein, 1)
-                engine = Engine{Float64}(Int(enginein[i,1]),
+                engine = Engine{R}(Int(enginein[i,1]),
                     Int(enginein[i,2]), Int(enginein[i,3]),
                     enginein[i,4], [enginein[i,5], enginein[i,6], enginein[i,7]],
                     [enginein[i,8], enginein[i,9], enginein[i,10]],
@@ -211,7 +211,7 @@ function readasw(filename::String)
             skip = 1
             weightin, line = parseblock(f, line, nvalue, skip)
             for i = 1:size(weightin, 1)
-                weight = Weight{Float64}(Int(weightin[i,1]), weightin[i,2],
+                weight = Weight{R}(Int(weightin[i,1]), weightin[i,2],
                     [weightin[i,3], weightin[i,4], weightin[i,5]],
                     weightin[i,6], weightin[i,7], weightin[i,8],
                     [weightin[i,9], weightin[i,10], weightin[i,11]],
@@ -226,7 +226,7 @@ function readasw(filename::String)
             skip = 1
             strutin,line = parseblock(f, line, nvalue, skip)
             for i = 1:size(strutin, 1)
-                strut = Strut{Float64}(strutin[i,1], strutin[i,2],
+                strut = Strut{R}(strutin[i,1], strutin[i,2],
                     [strutin[i,3], strutin[i,4], strutin[i,5]],
                     [strutin[i,6], strutin[i,7], strutin[i,8]],
                     strutin[i,9], strutin[i,10])
@@ -239,7 +239,7 @@ function readasw(filename::String)
             skip = 2
             jointin, line = parseblock(f, line, nvalue, skip)
             for i = 1:size(jointin,1)
-                joint = Joint{Float64}(Int(jointin[i,1]), Int(jointin[i,2]), jointin[i,3],
+                joint = Joint{R}(Int(jointin[i,1]), Int(jointin[i,2]), jointin[i,3],
                     jointin[i,4], Int(jointin[i,5]))
                 push!(joints, joint)
             end
@@ -270,7 +270,7 @@ function readasw(filename::String)
                         hinge_moment[i] = jangle_data[i,1]
                         hinge_angle[i] = jangle_data[i,2]
                     end
-                    jangle = Jangle{Float64}(Njoint, hinge_axis, hinge_moment, hinge_angle)
+                    jangle = Jangle{R}(Njoint, hinge_axis, hinge_moment, hinge_angle)
                     push!(jangles, jangle)
                     break
                 end
@@ -282,14 +282,14 @@ function readasw(filename::String)
             skip = 1
             groundin,line = parseblock(f, line, nvalue, skip)
             for i = 1:size(groundin,1)
-                ground = Ground{Float64}(Int(groundin[i,1]), groundin[i,2], Int(groundin[i,3]))
+                ground = Ground{R}(groundin[i,1], groundin[i,2], groundin[i,3])
                 push!(grounds, ground)
             end
             # Check for and read new beam
         elseif lowercase(str[1:4]) == "beam"
             # println("Reading Beam Blocks")
             nbeam = nbeam+1
-            beamvars = [Array{Float64}(undef, 0, 2) for idx in 1:length(beamvarval)]
+            beamvars = [Array{R}(undef, 0, 2) for idx in 1:length(beamvarval)]
             # Read beam number and physical index
             substr = split(chomp(str))
             beam_number = Meta.parse(substr[2])
@@ -367,8 +367,8 @@ function readasw(filename::String)
                     end
                 end
             end
-            spanwise_variables = SpanwiseVariables{Float64}(beamvars...)
-            beam = Beam{Float64}(beam_number, physical_index, beam_name, spanwise_variables)
+            spanwise_variables = SpanwiseVariables{R}(beamvars...)
+            beam = Beam{R}(beam_number, physical_index, beam_name, spanwise_variables)
             push!(beams, beam)
         else
             error("Undefined input on line $line:\n
@@ -376,7 +376,7 @@ function readasw(filename::String)
         end
     end
     close(f)
-    asw = Configuration(aswname, si_units, constants, refvals, weights,
+    asw = Configuration{R}(aswname, si_units, constants, refvals, weights,
         sensors, engines, struts, joints, jangles, grounds, beams)
     return asw
 end
@@ -451,10 +451,10 @@ end
 
     Reads a .pnt file
 """
-function readpnt(filename::String)
+function readpnt(filename::String, R::Type{<:Real} = Float64)
     local constraints, mach_from_airspeed, ground_image, parameters
     open(filename) do f
-        oper_pnts = Array{OperatingPoint}(undef, 0)
+        oper_pnts = Array{OperatingPoint{R},1}(undef, 0)
         str = readline(f)
         substr = split(str)
         iptot0pnt = Meta.parse(substr[1])
@@ -463,7 +463,6 @@ function readpnt(filename::String)
         point = 0
         while !eof(f)
             point = point+1
-            oper_pnt = OperatingPoint()
             # Read constraints
             str = readline(f)
             substr = split(str)
@@ -477,11 +476,11 @@ function readpnt(filename::String)
             phi = Meta.parse(substr[KPBANK])
             theta = Meta.parse(substr[KPELEV])
             psi = Meta.parse(substr[KPHEAD])
-            flap_defl_ctrl_var = zeros(Int32, NFLPX)
+            flap_defl_ctrl_var = zeros(Int, NFLPX)
             for i = 1:NFLPX
                 flap_defl_ctrl_var[i] = Meta.parse(substr[KPFLP1-1+i])
             end
-            eng_pwr_ctrl_var = zeros(Int32, NENGX)
+            eng_pwr_ctrl_var = zeros(Int, NENGX)
             for i = 1:NENGX
                 eng_pwr_ctrl_var[i] = Meta.parse(substr[KPENG1-1+i])
             end
@@ -520,11 +519,11 @@ function readpnt(filename::String)
             phi = Meta.parse(substr[IPBANK])
             theta = Meta.parse(substr[IPELEV])
             psi = Meta.parse(substr[IPHEAD])
-            flap_defl_ctrl_var = zeros(Float64, NFLPX)
+            flap_defl_ctrl_var = zeros(R, NFLPX)
             for i = 1:NFLPX
                 flap_defl_ctrl_var[i] = Meta.parse(substr[IPFLP1-1+i])
             end
-            eng_pwr_ctrl_var = zeros(Float64,NENGX)
+            eng_pwr_ctrl_var = zeros(R,NENGX)
             for i = 1:NENGX
                 eng_pwr_ctrl_var[i] = Meta.parse(substr[IPENG1-1+i])
             end
@@ -536,7 +535,7 @@ function readpnt(filename::String)
             usr1 = Meta.parse(substr[IPUSR1])
             usr2 = Meta.parse(substr[IPUSR2])
             least_squared = Meta.parse(substr[IPLSQD])
-            parameters = Parameters(
+            parameters = Parameters{R}(
                 linear_acceleration = linear_acceleration,
                 angular_acceleration = angular_acceleration,
                 velocity = velocity,
@@ -562,18 +561,18 @@ function readpnt(filename::String)
             # Read flap weights for least squares
             str = readline(f)
             substr = split(str)
-            wflap = zeros(Float64, NFLPX)
+            wflap = zeros(R, NFLPX)
             for i = 1:length(substr)
                 wflap[i] = Meta.parse(substr[i])
             end
             # Read engine weights for least squares
             str = readline(f)
             substr = split(str)
-            wpeng = zeros(Float64, NENGX)
+            wpeng = zeros(R, NENGX)
             for i = 1:length(substr)
                 wpeng[i] = Meta.parse(substr[i])
             end
-            oper_pnt = OperatingPoint(constraints, mach_from_airspeed, 0.0,
+            oper_pnt = OperatingPoint{R}(constraints, mach_from_airspeed, 0.0,
                 ground_image, parameters, wflap, wpeng)
             push!(oper_pnts,oper_pnt)
         end
