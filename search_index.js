@@ -33,11 +33,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#Rebuilding-1",
+    "location": "index.html#Installation-1",
     "page": "Home",
-    "title": "Rebuilding",
+    "title": "Installation",
     "category": "section",
-    "text": "Rebuilding the package will automatically regenerate the shared library.(v1.0) pkg> build Aswing"
+    "text": "See the relevant documentation page."
 },
 
 {
@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Usage",
     "category": "section",
-    "text": "Example usage can be found here.  Most functions are also documented in the source code. Access to FORTRAN global variables can be obtained through the ASWING global composite type. Use of this package is easiest if the user has experience using ASWING as a standalone package and understands the necessary workflow in ASWING to analyze flexible aircraft."
+    "text": "See the example use case. Most functions are also documented in the source code. Access to FORTRAN global variables can be obtained through the ASWING global composite type. Use of this package is easiest if the user has experience using ASWING as a standalone package and understands the necessary workflow in ASWING to analyze flexible aircraft."
 },
 
 {
