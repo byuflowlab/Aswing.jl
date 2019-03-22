@@ -1,7 +1,7 @@
 # defines geometry used in ASWING
 
 # Dictionary of pointers to beam values
-beamvarval = Dict{String,Int32}(strip(VARS[i])=>i for i = 1:JBTOT)
+beamvarval = Dict{String,Int}(strip(VARS[i])=>i for i = 1:JBTOT)
 
 """
     Constants(;
