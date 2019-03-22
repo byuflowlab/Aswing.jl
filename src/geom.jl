@@ -963,7 +963,7 @@ function Configuration(
     grounds::AbstractArray{<:Ground,1},
     beams::AbstractArray{<:Beam,1})
 
-    return Configuration{Float64}(namein, si_units, constants, refvals, weights, sensors,
+    Configuration{Float64}(namein, si_units, constants, refvals, weights, sensors,
         engines, struts, joints, jangles, grounds, beams)
 end
 
@@ -981,7 +981,7 @@ function Configuration(;
     grounds::AbstractArray{<:Ground,1} = Array{Ground{Float64},1}(undef, 0),
     beams::AbstractArray{<:Beam,1} = Array{Beam{Float64},1}(undef, 0))
 
-    return Configuration{Float64}(namein, si_units, constants, refvals, weights, sensors,
+    Configuration{Float64}(namein, si_units, constants, refvals, weights, sensors,
         engines, struts, joints, jangles, grounds, beams)
 end
 
@@ -999,6 +999,6 @@ function (::Type{Configuration{R}})(;
     grounds::AbstractArray{<:Ground,1} = Array{Ground{R},1}(undef, 0),
     beams::AbstractArray{<:Beam,1} = Array{Beam{R},1}(undef, 0)) where R<:Real
 
-    return Configuration{R}(namein, si_units, constants, refvals, weights, sensors,
+    Configuration{R}(namein, si_units, constants, refvals, weights, sensors,
         engines, struts, joints, jangles, grounds, beams)
 end
