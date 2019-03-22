@@ -376,13 +376,15 @@ end
     Sets gust type and corresponding parameters
 """
 function setgust(igust::Integer, params::AbstractArray{<:Real}=[-4.0,0.0,1.0,8.0,2.0,0.0])
+
     gustparam = [-4.0,0.0,1.0,8.0,2.0,0.0]
-    if length(gustparam) > 6
+    if length(params) > 6
         error("No more than six gust parameters may be specified")
     end
     gustparam[1:length(params)] = params
     ASWING.IGUST[1] = igust
     ASWING.VGCON[1:6] = gustparam
+
     return nothing
 end
 
@@ -428,20 +430,23 @@ end
     Calculates stability derivatives
 """
 function getstabilityderivatives(ipnt::Integer = 1, momref::AbstractArray{<:Real,1}=Float64[])
+
+    R = Float64
+
     if !isempty(momref)
         # assign new moment reference point
         ASWING.XYZREF[:,1] = momref
     end
 
     # get stability derivatives
-    f_vba = zeros(Float64, 3, 3)
-    m_vba = zeros(Float64, 3, 3)
-    f_rot = zeros(Float64, 3, 3)
-    m_rot = zeros(Float64, 3, 3)
-    f_flap = zeros(Float64, 3, NFLPX)
-    m_flap = zeros(Float64, 3, NFLPX)
-    f_peng = zeros(Float64, 3, NENGX)
-    m_peng = zeros(Float64, 3, NENGX)
+    f_vba = zeros(R, 3, 3)
+    m_vba = zeros(R, 3, 3)
+    f_rot = zeros(R, 3, 3)
+    m_rot = zeros(R, 3, 3)
+    f_flap = zeros(R, 3, NFLPX)
+    m_flap = zeros(R, 3, NFLPX)
+    f_peng = zeros(R, 3, NENGX)
+    m_peng = zeros(R, 3, NENGX)
     ccall((:dumpdm_, libaswing), Nothing,
     (Ref{Int32}, Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Float64},
     Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Int32}),
@@ -528,23 +533,11 @@ function getintervals(ibeam::Integer)
 end
 
 """
-    nodeset(ibeam::Integer, nnodes::Integer)
     nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
 
     Sets new number of nodes for ibeam.  A custom number of panels can be used
     between break points.
 """
-function nodeset(ibeam::Integer, nnodes::Integer)
-    if nnodes < 2
-        error("nnodes too small. nnodes must be >= 2")
-    elseif nnodes > IIX
-        error("nnodes too large. nnodes must be < IIX")
-    end
-    ASWING.II[ibeam] = nnodes
-    THCALC.CUSTOMINTERVALS[1] = false
-    ccall((:iiset_,libaswing), Nothing, ())
-end
-
 function nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
     if length(intervals) != ASWING.NBEAM[1]
         error("length of intervals must equal ASWING.NBEAM")
@@ -580,7 +573,8 @@ function nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
         THCALC.CUSTOMINTERVALS[1] = true
         THCALC.INTERVALS[kbfrst+1:kblast] = intervals[ibeam]
         ccall((:winit_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}), ibeam, 0)
-        ccall((:qinit_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}), ibeam, 0)
+        ccall((:qinit_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}, Ref{Float64}, Ref{Float64}),
+            ASWING.IFRST[ibeam], ASWING.ILAST[ibeam], view(ASWING.Q,1:18,1:ASWING.IITOT[1],ASWING.IPOINT[1]), ASWING.Q0)
     end
     ccall((:spltset_, libaswing), Nothing, ())
     ccall((:micalc_, libaswing), Nothing, (Ref{Int32},), 1)
@@ -589,6 +583,7 @@ function nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
     # set to unconverged
     ASWING.LQINI[1:NPNTX] .= false
     ASWING.LCONV[1:NPNTX] .= false
+    ASWING.LAINI[1:NPNTX] .= false
 
     # restore default node distribution settings
     THCALC.CUSTOMINTERVALS[1] = false
@@ -620,7 +615,7 @@ function getstaticmargin(ipnt::Integer=1)
     # Switch to anchored constraints
     setcons(Constraints("anchored"))
 
-    # Get quasi-steady Solution
+    # Get quasi-steady solution
     solution_qs = solvesteady(ipnt)
 
     # check if convergence failed
