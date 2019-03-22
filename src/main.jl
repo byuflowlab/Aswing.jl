@@ -179,7 +179,7 @@ end
     setpnt(point)
     Inputs operating point(s) into ASWING
 """
-function setpnt(point::AbstractArray{OperatingPoint,1})
+function setpnt(point::AbstractArray{<:OperatingPoint,1})
     # set number of operating points
     npoint = length(point)
     ASWING.NPOINT[1] = npoint
