@@ -73,6 +73,7 @@ struct StabilityDerivatives{R<:Real}
         m_peng[1,:], m_peng[2,:], m_peng[3,:])
     end
 end
+eltype(::Type{StabilityDerivatives{R}}) where R<:Real = R
 
 function StabilityDerivatives(f_vba::AbstractArray{<:Real,2},
     m_vba::AbstractArray{<:Real,2}, f_rot::AbstractArray{<:Real,2},
@@ -141,6 +142,7 @@ struct SolutionParameters{R<:Real}
     load_factor::R
     mass::R
 end
+eltype(::Type{SolutionParameters{R}}) where R<:Real = R
 
 # contains spanwise input variable information interpolated to Solution nodes
 struct SolutionGeometry{R<:Real}
@@ -191,6 +193,8 @@ struct SolutionGeometry{R<:Real}
     dCMdF::Array{R,2}
     dCDdF::Array{R,2}
 end
+eltype(::Type{SolutionGeometry{R}}) where R<:Real = R
+
 
 # contains spanwise output variable information at Solution nodes
 struct SolutionSpanwise{R<:Real}
@@ -222,7 +226,7 @@ struct SolutionSpanwise{R<:Real}
     da_eff::Array{R,1} # aeroelastic twist
     da_flp::Array{R,1} # additional twist due to flaps
 end
-
+eltype(::Type{SolutionSpanwise{R}}) where R<:Real = R
 
 # contains aswing Solution data
 struct Solution{R<:Real}
@@ -231,6 +235,7 @@ struct Solution{R<:Real}
     span_geom::Array{SolutionGeometry{R},1}
     span_param::Array{SolutionSpanwise{R},1}
 end
+eltype(::Type{Solution{R}}) where R<:Real = R
 
 # converts ASWING output arrays to Solution struct
 function getsolution(ipnt1::Integer, ipnt2::Integer)

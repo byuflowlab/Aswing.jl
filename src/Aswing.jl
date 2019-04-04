@@ -1,6 +1,8 @@
 module Aswing
 using OffsetArrays
 
+import Base.eltype
+
 function __init__()
     global UNITS = UNITS_s()
     global ASWING = ASWING_s()
@@ -8,6 +10,12 @@ function __init__()
     global THCALC = THCALC_s()
     global CONLAW = CONLAW_s()
     initialize()
+
+    global GlobalUNITS = UNITS
+    global GlobalASWING = ASWING
+    global GlobalEIGEN = EIGEN
+    global GlobalTHCALC = THCALC
+    global GlobalCONLAW = CONLAW
 end
 
 const depsfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
