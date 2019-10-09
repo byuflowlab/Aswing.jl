@@ -82,11 +82,11 @@ function setsav(file)
 end
 
 """
-    readasw(filename::String)
+    readasw(filename::AbstractString, R::Type{<:Real}=Float64)
 
     Reads a .asw file
 """
-function readasw(filename::String, R::Type{<:Real} = Float64)
+function readasw(filename::AbstractString, R::Type{<:Real}=Float64)
     local aswname, si_units, constants, refvals
     sensors = Sensor{R}[]
     engines = Engine{R}[]
@@ -329,8 +329,12 @@ function readasw(filename::String, R::Type{<:Real} = Float64)
                     iline = 1
                     while !eof(f)
                         str = readline(f)
+                        idx = findfirst(isequal('!'), str[2:end])
+                        if idx != nothing
+                            str = str[1:idx]
+                        end
                         line = line + 1
-                        if isinline(lowercase(str), "end", 1:3)
+                        if occursin("end", lowercase(str))
                             beam_data_end = true
                             break
                         elseif isinline(strip(str), "t", 1:1)
@@ -393,6 +397,10 @@ function parseblock(f, line, nvalue, skip)
     iline = 1
     while !eof(f)
         str = readline(f)
+        idx = findfirst(isequal('!'), str[2:end])
+        if idx != nothing
+            str = str[1:idx]
+        end
         line = line + 1
         if isinline(lowercase(str),"end",1:3)
             break
@@ -433,6 +441,7 @@ function parseblock(f, line, nvalue, skip)
     return fdata,line
 end
 
+
 """
     isinline(line, stringtofind, range)
 
@@ -451,52 +460,102 @@ end
 
     Reads a .pnt file
 """
-function readpnt(filename::String, R::Type{<:Real} = Float64)
+function readpnt(filename::AbstractString)
     local constraints, mach_from_airspeed, ground_image, parameters
     open(filename) do f
-        oper_pnts = Array{OperatingPoint{R},1}(undef, 0)
+        oper_pnts = Array{OperatingPoint,1}(undef, 0)
         str = readline(f)
         substr = split(str)
-        iptot0pnt = Meta.parse(substr[1])
-        kptot0pnt = Meta.parse(substr[2])
-        kpfree0pnt = Meta.parse(substr[3])
+        iptot0 = Meta.parse(substr[1])
+        kptot0 = Meta.parse(substr[2])
+        kpfree0 = Meta.parse(substr[3])
+
+        if (iptot0 != IPTOT) || (kptot0 != KPTOT) || (kpfree0 != KPFREE)
+            error("Dimensions have changed. Point file not read.")
+        end
+
         point = 0
         while !eof(f)
             point = point+1
+
             # Read constraints
             str = readline(f)
             substr = split(str)
-            linear_acceleration = [Meta.parse(substr[KPVACX]), Meta.parse(substr[KPVACY]), Meta.parse(substr[KPVACZ])]
-            angular_acceleration = [Meta.parse(substr[KPRACX]), Meta.parse(substr[KPRACY]), Meta.parse(substr[KPRACZ])]
-            velocity = Meta.parse(substr[KPVELX])
-            beta = Meta.parse(substr[KPVELY])
-            alpha = Meta.parse(substr[KPVELZ])
-            rotation_rate = [Meta.parse(substr[KPROTX]), Meta.parse(substr[KPROTY]), Meta.parse(substr[KPROTZ])]
-            position = [Meta.parse(substr[KPPOSX]), Meta.parse(substr[KPPOSY]), Meta.parse(substr[KPPOSZ])]
-            phi = Meta.parse(substr[KPBANK])
-            theta = Meta.parse(substr[KPELEV])
-            psi = Meta.parse(substr[KPHEAD])
+
+            idx = 0
+
+            linear_acceleration = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            angular_acceleration = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            velocity = Meta.parse(substr[idx+1])
+            idx += 1
+
+            beta = Meta.parse(substr[idx+1])
+            idx += 1
+
+            alpha = Meta.parse(substr[idx+1])
+            idx += 1
+
+            rotation_rate = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            position = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            phi = Meta.parse(substr[idx+1])
+            idx += 1
+
+            theta = Meta.parse(substr[idx+1])
+            idx += 1
+
+            psi = Meta.parse(substr[idx+1])
+            idx += 1
+
             flap_defl_ctrl_var = zeros(Int, NFLPX)
             for i = 1:NFLPX
-                flap_defl_ctrl_var[i] = Meta.parse(substr[KPFLP1-1+i])
+                flap_defl_ctrl_var[i] = Meta.parse(substr[idx+i])
             end
+            idx += NFLPX
+
             eng_pwr_ctrl_var = zeros(Int, NENGX)
             for i = 1:NENGX
-                eng_pwr_ctrl_var[i] = Meta.parse(substr[KPENG1-1+i])
+                eng_pwr_ctrl_var[i] = Meta.parse(substr[idx+i])
             end
-            err_int_Vinf = Meta.parse(substr[KPVIDT])
-            err_int_beta = Meta.parse(substr[KPBEDT])
-            err_int_alpha = Meta.parse(substr[KPALDT])
-            err_int_phi = Meta.parse(substr[KPBADT])
-            err_int_theta = Meta.parse(substr[KPELDT])
-            err_int_psi = Meta.parse(substr[KPHEDT])
-            err_int_ROTxyz = [Meta.parse(substr[KPWDTX]), Meta.parse(substr[KPWDTY]), Meta.parse(substr[KPWDTZ])]
-            err_int_VACxyz = [Meta.parse(substr[KPADTX]), Meta.parse(substr[KPADTY]), Meta.parse(substr[KPADTZ])]
+            idx += NENGX
+
+            err_int_Vinf = Meta.parse(substr[idx+1])
+            idx += 1
+
+            err_int_beta = Meta.parse(substr[idx+1])
+            idx += 1
+
+            err_int_alpha = Meta.parse(substr[idx+1])
+            idx += 1
+
+            err_int_phi = Meta.parse(substr[idx+1])
+            idx += 1
+
+            err_int_theta = Meta.parse(substr[idx+1])
+            idx += 1
+
+            err_int_psi = Meta.parse(substr[idx+1])
+            idx += 1
+
+            err_int_ROTxyz = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            err_int_VACxyz = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
             constraints = Constraints(linear_acceleration,
                 angular_acceleration, [velocity, beta, alpha], rotation_rate,
                 position, phi, theta, psi, flap_defl_ctrl_var, eng_pwr_ctrl_var,
                 err_int_Vinf, err_int_beta, err_int_alpha, err_int_phi,
                 err_int_theta, err_int_psi, err_int_ROTxyz, err_int_VACxyz)
+
             # Read mach_from_airspeed boolean and ground image integer
             str = readline(f)
             substr = split(str)
@@ -506,36 +565,80 @@ function readpnt(filename::String, R::Type{<:Real} = Float64)
                 mach_from_airspeed = false
             end
             ground_image = Meta.parse(substr[2])
+
             # Read specified parameters
             str = readline(f)
             substr = split(str)
-            linear_acceleration = [Meta.parse(substr[IPVACX]), Meta.parse(substr[IPVACY]), Meta.parse(substr[IPVACZ])]
-            angular_acceleration = [Meta.parse(substr[IPRACX]), Meta.parse(substr[IPRACY]), Meta.parse(substr[IPRACZ])]
-            velocity = Meta.parse(substr[IPVIAS])
-            beta = Meta.parse(substr[IPBETA])
-            alpha = Meta.parse(substr[IPALFA])
-            rotation_rate = [Meta.parse(substr[IPROTX]), Meta.parse(substr[IPROTY]), Meta.parse(substr[IPROTZ])]
-            position = [Meta.parse(substr[IPPOSX]), Meta.parse(substr[IPPOSY]), Meta.parse(substr[IPPOSZ])]
-            phi = Meta.parse(substr[IPBANK])
-            theta = Meta.parse(substr[IPELEV])
-            psi = Meta.parse(substr[IPHEAD])
-            flap_defl_ctrl_var = zeros(R, NFLPX)
+
+            idx = 0
+
+            linear_acceleration = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            angular_acceleration = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            velocity = Meta.parse(substr[idx+1])
+            idx += 1
+
+            beta = Meta.parse(substr[idx+1])
+            idx += 1
+
+            alpha = Meta.parse(substr[idx+1])
+            idx += 1
+
+            rotation_rate = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            position = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            phi = Meta.parse(substr[idx+1])
+            idx += 1
+
+            theta = Meta.parse(substr[idx+1])
+            idx += 1
+
+            psi = Meta.parse(substr[idx+1])
+            idx += 1
+
+            flap_defl_ctrl_var = zeros(Float64, NFLPX)
             for i = 1:NFLPX
-                flap_defl_ctrl_var[i] = Meta.parse(substr[IPFLP1-1+i])
+                flap_defl_ctrl_var[i] = Meta.parse(substr[idx+i])
             end
-            eng_pwr_ctrl_var = zeros(R,NENGX)
+            idx += NFLPX
+
+            eng_pwr_ctrl_var = zeros(Float64, NENGX)
             for i = 1:NENGX
-                eng_pwr_ctrl_var[i] = Meta.parse(substr[IPENG1-1+i])
+                eng_pwr_ctrl_var[i] = Meta.parse(substr[idx+i])
             end
-            sum_force = [Meta.parse(substr[IPFORX]), Meta.parse(substr[IPFORY]), Meta.parse(substr[IPFORZ])]
-            sum_mom = [Meta.parse(substr[IPMOMX]), Meta.parse(substr[IPMOMY]), Meta.parse(substr[IPMOMZ])]
-            lift = Meta.parse(substr[IPLIFT])
-            climb_angle = Meta.parse(substr[IPGAMM])
-            radial_acceleration = Meta.parse(substr[IPRACC])
-            usr1 = Meta.parse(substr[IPUSR1])
-            usr2 = Meta.parse(substr[IPUSR2])
-            least_squared = Meta.parse(substr[IPLSQD])
-            parameters = Parameters{R}(
+            idx += NENGX
+
+            sum_force = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            sum_mom = [Meta.parse(substr[idx+1]), Meta.parse(substr[idx+2]), Meta.parse(substr[idx+3])]
+            idx += 3
+
+            lift = Meta.parse(substr[idx+1])
+            idx += 1
+
+            climb_angle = Meta.parse(substr[idx+1])
+            idx += 1
+
+            radial_acceleration = Meta.parse(substr[idx+1])
+            idx += 1
+
+            usr1 = Meta.parse(substr[idx+1])
+            idx += 1
+
+            usr2 = Meta.parse(substr[idx+1])
+            idx += 1
+
+            least_squared = Meta.parse(substr[idx+1])
+            idx += 1
+
+            parameters = Parameters(
                 linear_acceleration = linear_acceleration,
                 angular_acceleration = angular_acceleration,
                 velocity = velocity,
@@ -561,18 +664,18 @@ function readpnt(filename::String, R::Type{<:Real} = Float64)
             # Read flap weights for least squares
             str = readline(f)
             substr = split(str)
-            wflap = zeros(R, NFLPX)
-            for i = 1:length(substr)
+            wflap = zeros(Float64, NFLPX)
+            for i = 1:min(length(substr), NFLPX)
                 wflap[i] = Meta.parse(substr[i])
             end
             # Read engine weights for least squares
             str = readline(f)
             substr = split(str)
-            wpeng = zeros(R, NENGX)
-            for i = 1:length(substr)
+            wpeng = zeros(Float64, NENGX)
+            for i = 1:min(length(substr), NENGX)
                 wpeng[i] = Meta.parse(substr[i])
             end
-            oper_pnt = OperatingPoint{R}(constraints, mach_from_airspeed, 0.0,
+            oper_pnt = OperatingPoint(constraints, mach_from_airspeed, 0.0,
                 ground_image, parameters, wflap, wpeng)
             push!(oper_pnts,oper_pnt)
         end

@@ -13,7 +13,9 @@ function setgeom(asw::Configuration)
     npylo = 0 #pylon counter
 
     # NAME
-    ASWING.NAME[:] .= Vector{Char}(rpad(asw.namein, 80))
+    for i = 1:length(asw.namein)
+        ASWING.NAME[i] = asw.namein[i]
+    end
 
     # UNITS
     if asw.si_units
@@ -64,8 +66,8 @@ function setgeom(asw::Configuration)
     # ENGINE BLOCK
     neng = length(asw.engines)
     for i = 1:neng
-        ASWING.KPTYPE[npylo+i] = 10 + asw.engines[i].Keng
-        ASWING.IENGTYP[npylo+i] = asw.engines[i].IEtyp
+        keng = asw.engines[i].Keng
+        ietyp = asw.engines[i].IEtyp
         ASWING.KBPYLO[npylo+i] = asw.engines[i].Nbeam
         ASWING.QPYLO[0,npylo+i] = asw.engines[i].t
         ASWING.QPYLO[1:3,npylo+i] = asw.engines[i].location
@@ -85,6 +87,10 @@ function setgeom(asw::Configuration)
         ASWING.QPYLO[19,npylo+i] = asw.engines[i].C2
         ASWING.QPYLO[20,npylo+i] = asw.engines[i].S3
         ASWING.QPYLO[21,npylo+i] = asw.engines[i].C3
+
+        ASWING.KPTYPE[npylo+i] = 10 + keng
+        ke = max(1, min(NENGX, keng))
+        ASWING.IENGTYP[ke] = ietyp
     end
     npylo += neng
 
@@ -156,7 +162,7 @@ function setgeom(asw::Configuration)
     nbeam = length(asw.beams)
     ASWING.NBEAM[1] = nbeam
     for ibeam = 1:nbeam
-        ASWING.BNAME[ibeam][:] = Vector{Char}(rpad(asw.beams[ibeam].name, 64))
+        ASWING.BNAME[ibeam][1:length(asw.beams[ibeam].name)] = Vector{Char}(asw.beams[ibeam].name)
         ASWING.KBNUM[ibeam] = asw.beams[ibeam].number
         ASWING.IBEAM[ibeam] = asw.beams[ibeam].physical_index
         for var in keys(beamvarval)
@@ -180,6 +186,7 @@ end
     Inputs operating point(s) into ASWING
 """
 function setpnt(point::AbstractArray{<:OperatingPoint,1})
+
     # set number of operating points
     npoint = length(point)
     ASWING.NPOINT[1] = npoint
@@ -196,6 +203,7 @@ function setpnt(point::AbstractArray{<:OperatingPoint,1})
         # solution is unconverged
         ASWING.LCONV[ipnt] = false
     end
+
     # set Mach number for Prandtl-Glauert correction
     for ipnt = 1:npoint
         for ip = 1:KPFREE
@@ -203,6 +211,7 @@ function setpnt(point::AbstractArray{<:OperatingPoint,1})
         end
         ASWING.PARAM[KPMACH, ipnt] =  point[ipnt].machpg
     end
+
     return nothing
 end
 
@@ -219,8 +228,14 @@ function setcons(constraints, ipnt::Integer=1)
     ASWING.IPPAR[KPBANK,ipnt] = constraints.phi
     ASWING.IPPAR[KPELEV,ipnt] = constraints.theta
     ASWING.IPPAR[KPHEAD,ipnt] = constraints.psi
-    ASWING.IPPAR[KPFLP1:KPFLP20,ipnt] = constraints.flap_defl_ctrl_var
-    ASWING.IPPAR[KPENG1:KPENG12,ipnt] = constraints.eng_pwr_ctrl_var
+    ASWING.IPPAR[KPFLP1:KPFLP1+length(constraints.flap_defl_ctrl_var)-1,ipnt] = constraints.flap_defl_ctrl_var
+    for ip = KPFLP1+length(constraints.flap_defl_ctrl_var):KPFLP1+NFLPX
+        ASWING.IPPAR[ip,ipnt] = ip
+    end
+    ASWING.IPPAR[KPENG1:KPENG1+length(constraints.eng_pwr_ctrl_var)-1,ipnt] = constraints.eng_pwr_ctrl_var
+    for ip = KPENG1+length(constraints.eng_pwr_ctrl_var):KPENG1+NENGX
+        ASWING.IPPAR[ip,ipnt] = ip
+    end
     for kf=1 : NFLPX
         kpflp1 = KPFLP1[1]
         ipflp1 = IPFLP1[1]
@@ -260,34 +275,34 @@ end
     Sets operating point parameters into ASWING
 """
 function setpars(parameters, ipnt::Integer=1)
-    ASWING.PSPEC[1:3,ipnt] = parameters.linear_acceleration
-    ASWING.PSPEC[4:6,ipnt] = parameters.angular_acceleration
-    ASWING.PSPEC[7,ipnt] = parameters.velocity
-    ASWING.PSPEC[8,ipnt] = parameters.beta
-    ASWING.PSPEC[9,ipnt] = parameters.alpha
-    ASWING.PSPEC[10:12,ipnt] = parameters.rotation_rate
-    ASWING.PSPEC[13:15,ipnt] = parameters.position
-    ASWING.PSPEC[16,ipnt] = parameters.phi
-    ASWING.PSPEC[17,ipnt] = parameters.theta
-    ASWING.PSPEC[18,ipnt] = parameters.psi
-    for j = 1:NFLPX
-      ASWING.PSPEC[18+j,ipnt] = parameters.flap_defl_ctrl_var[j]
+
+    ASWING.PSPEC[IPVACX:IPVACZ,ipnt] = parameters.linear_acceleration
+    ASWING.PSPEC[IPRACX:IPRACZ,ipnt] = parameters.angular_acceleration
+    ASWING.PSPEC[IPVIAS,ipnt] = parameters.velocity
+    ASWING.PSPEC[IPBETA,ipnt] = parameters.beta
+    ASWING.PSPEC[IPALFA,ipnt] = parameters.alpha
+    ASWING.PSPEC[IPROTX:IPROTZ,ipnt] = parameters.rotation_rate
+    ASWING.PSPEC[IPPOSX:IPPOSZ,ipnt] = parameters.position
+    ASWING.PSPEC[IPBANK,ipnt] = parameters.phi
+    ASWING.PSPEC[IPELEV,ipnt] = parameters.theta
+    ASWING.PSPEC[IPHEAD,ipnt] = parameters.psi
+    ASWING.PSPEC[IPFLP1:IPFLP1+length(parameters.flap_defl_ctrl_var)-1,ipnt] = parameters.flap_defl_ctrl_var
+    for ip = IPFLP1+length(parameters.flap_defl_ctrl_var):IPFLP1+NFLPX
+      ASWING.PSPEC[ip,ipnt] = 0.0
     end
-    for j = 1:NENGX
-      ASWING.PSPEC[18+NFLPX+j,ipnt] = parameters.eng_pwr_ctrl_var[j]
+    ASWING.PSPEC[IPENG1:IPENG1+length(parameters.eng_pwr_ctrl_var)-1,ipnt] = parameters.eng_pwr_ctrl_var
+    for ip = IPENG1+length(parameters.eng_pwr_ctrl_var):IPENG1+NENGX
+      ASWING.PSPEC[ip,ipnt] = 0.0
     end
-    ASWING.PSPEC[51,ipnt] = parameters.sum_force[1]
-    ASWING.PSPEC[52,ipnt] = parameters.sum_force[2]
-    ASWING.PSPEC[53,ipnt] = parameters.sum_force[3]
-    ASWING.PSPEC[54,ipnt] = parameters.sum_mom[1]
-    ASWING.PSPEC[55,ipnt] = parameters.sum_mom[2]
-    ASWING.PSPEC[56,ipnt] = parameters.sum_mom[3]
-    ASWING.PSPEC[57,ipnt] = parameters.lift
-    ASWING.PSPEC[58,ipnt] = parameters.climb_angle
-    ASWING.PSPEC[59,ipnt] = parameters.radial_acceleration
-    ASWING.PSPEC[60,ipnt] = parameters.usr1
-    ASWING.PSPEC[61,ipnt] = parameters.usr2
-    ASWING.PSPEC[62,ipnt] = parameters.least_squared
+    ASWING.PSPEC[IPFORX:IPFORZ,ipnt] = parameters.sum_force
+    ASWING.PSPEC[IPMOMX:IPMOMZ,ipnt] = parameters.sum_mom
+    ASWING.PSPEC[IPLIFT,ipnt] = parameters.lift
+    ASWING.PSPEC[IPGAMM,ipnt] = parameters.climb_angle
+    ASWING.PSPEC[IPRACC,ipnt] = parameters.radial_acceleration
+    ASWING.PSPEC[IPUSR1,ipnt] = parameters.usr1
+    ASWING.PSPEC[IPUSR2,ipnt] = parameters.usr2
+    ASWING.PSPEC[IPLSQD,ipnt] = parameters.least_squared
+
     return nothing
 end
 
@@ -300,6 +315,7 @@ end
     solved.
 """
 function solvesteady(ipnt1::Integer, ipnt2::Integer; repeat::Integer=0)
+
     ASWING.STEADY[1] = true
     for ipnt in ipnt1:ipnt2
         # set operating point
@@ -314,6 +330,7 @@ function solvesteady(ipnt1::Integer, ipnt2::Integer; repeat::Integer=0)
             end
         end
     end
+
     # return formatted solution
     return getsolution(ipnt1,ipnt2)
 end
@@ -325,14 +342,18 @@ solvesteady(ipnt1::Integer; repeat::Integer=0) = solvesteady(ipnt1, ipnt1, repea
     Unsteady ASWING time-domain solve
 """
 function solveunsteady(deltat::Real, ntimes::Integer, ipnt::Integer=1)
+
     # set operating point
     ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) # hack to avoid string passing
     ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
+
     # change to unsteady
     ASWING.STEADY[1] = false
+
     # solve unsteady
     ASWING.ARGP1[1:4] .= Vector{Char}(rpad("X",4)) # hack to avoid string passing
     ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), deltat, ntimes)
+
     # return formatted solution
     return getsolution(1, ntimes+1)
 end
@@ -343,7 +364,8 @@ end
     retainparam(ipnt1::Integer, ipnt2::Integer)
     Sets operating point parameters equivalent to those of the current state
 """
-function retainparam(ipnt1::Integer, ipnt2::Integer)
+function retainparam(ipnt1::Integer, ipnt2::Integer=ipnt1)
+
     for ipnt in ipnt1:ipnt2
         # set operating point
         ASWING.ARGP1[1:4] .= Vector{Char}(rpad("$ipnt",4)) #hack to avoid string passing
@@ -352,10 +374,10 @@ function retainparam(ipnt1::Integer, ipnt2::Integer)
         ASWING.ARGP1[1:4] .= Vector{Char}(rpad("R",4)) #hack to avoid string passing
         ccall((:operjl_, libaswing), Nothing, (Ref{Float64}, Ref{Int32}), 0.0, 0)
     end
+
     return nothing
 end
 retainparam() = retainparam(1, ASWING.NPOINT[1])
-retainparam(ipnt1::Integer) = retainparam(ipnt1, ipnt1)
 
 """
     freeze(ipoint = 1)
@@ -413,25 +435,24 @@ function geteigs(neig, zshift, ipnt; evmin = 1e-4, evtol = 1e-3)
     EIGEN.ZESEED[1] = zshift
 
     # compute only eigenvalues for specified operating points
-    nbeigen = ASWING.NBEIGEN[1]
     lrvec = true
     lgerr = false
-    ipini = 0
     ccall((:evexec_, libaswing), Nothing, (Ref{Int32}, Ref{ComplexF64}, Ref{Int32},
         Ref{Int32}, Ref{Int32}, Ref{Float64}, Ref{Float64}, Ref{Int32}),
-        ipnt, zshift, nbeigen, lrvec, lgerr, evmin, evtol, ipini)
+        ipnt, zshift, ASWING.NBEIGEN[1], lrvec, lgerr, evmin, evtol, 0)
+
     ccall((:wbcalc_, libaswing), Nothing, (Ref{Int32},), ipnt)
+
     zlamda = copy(EIGEN.ZLAMDA[1:EIGEN.NEIGEN[1]])
+
     return zlamda
 end
 
 """
-    getstabilityderivatives(ipnt = 1, momref=Float64[])
+    stabilityderivatives(ipnt = 1, momref=Float64[])
     Calculates stability derivatives
 """
-function getstabilityderivatives(ipnt::Integer = 1, momref::AbstractArray{<:Real,1}=Float64[])
-
-    R = Float64
+function stabilityderivatives(ipnt::Integer = 1; momref::AbstractArray{<:Real,1}=Float64[])
 
     if !isempty(momref)
         # assign new moment reference point
@@ -439,14 +460,14 @@ function getstabilityderivatives(ipnt::Integer = 1, momref::AbstractArray{<:Real
     end
 
     # get stability derivatives
-    f_vba = zeros(R, 3, 3)
-    m_vba = zeros(R, 3, 3)
-    f_rot = zeros(R, 3, 3)
-    m_rot = zeros(R, 3, 3)
-    f_flap = zeros(R, 3, NFLPX)
-    m_flap = zeros(R, 3, NFLPX)
-    f_peng = zeros(R, 3, NENGX)
-    m_peng = zeros(R, 3, NENGX)
+    f_vba = zeros(Float64, 3, 3)
+    m_vba = zeros(Float64, 3, 3)
+    f_rot = zeros(Float64, 3, 3)
+    m_rot = zeros(Float64, 3, 3)
+    f_flap = zeros(Float64, 3, NFLPX)
+    m_flap = zeros(Float64, 3, NFLPX)
+    f_peng = zeros(Float64, 3, NENGX)
+    m_peng = zeros(Float64, 3, NENGX)
     ccall((:dumpdm_, libaswing), Nothing,
     (Ref{Int32}, Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Float64},
     Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Float64}, Ref{Int32}),
@@ -479,13 +500,14 @@ function conclr()
     CONLAW.CQ[:,:,:,:,:] .= 0.0
     CONLAW.DFREQ[:] .= 0.0
     CONLAW.DELTA[:] .= 0.0
+    return nothing
 end
 
 """
     conadd(i,j,ls,gfac,c)
     Sets up a proportional control law
 """
-function conadd(i,j,ls,gfac,c)
+function conadd(i::Integer, j::Integer, ls::Integer, gfac::Real, c::Real)
 
     ASWING.CONLAW[1] = true
     if ls <= 0
@@ -539,6 +561,7 @@ end
     between break points.
 """
 function nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
+
     if length(intervals) != ASWING.NBEAM[1]
         error("length of intervals must equal ASWING.NBEAM")
     end
@@ -560,18 +583,24 @@ function nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
         end
 
         # assign new number of nodes to beam
-        nnodes = sum(intervals[ibeam])+length(intervals[ibeam])
-        if nnodes < 2
-            error("sum(intervals[$ibeam]) too small. nnodes must be >= 2")
-        elseif nnodes > IIX
-            error("sum(intervals[$ibeam]) too large. nnodes must be < IIX")
+        if !isempty(intervals[ibeam])
+            nnodes = sum(intervals[ibeam])+length(intervals[ibeam])
+            if nnodes < 2
+                error("sum(intervals[$ibeam]) too small. nnodes must be >= 2")
+            elseif nnodes > IIX
+                error("sum(intervals[$ibeam]) too large. nnodes must be < IIX")
+            end
+            ASWING.II[ibeam] = nnodes
         end
-        ASWING.II[ibeam] = nnodes
         ccall((:iiset_, libaswing), Nothing, ())
 
         # assign new node distribution
-        THCALC.CUSTOMINTERVALS[1] = true
-        THCALC.INTERVALS[kbfrst+1:kblast] = intervals[ibeam]
+        if !isempty(intervals[ibeam])
+            THCALC.CUSTOMINTERVALS[1] = true
+            THCALC.INTERVALS[kbfrst+1:kblast] = intervals[ibeam]
+        else
+            THCALC.CUSTOMINTERVALS[1] = false
+        end
         ccall((:winit_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}), ibeam, 0)
         ccall((:qinit_, libaswing), Nothing, (Ref{Int32}, Ref{Int32}, Ref{Float64}, Ref{Float64}),
             ASWING.IFRST[ibeam], ASWING.ILAST[ibeam], view(ASWING.Q,1:18,1:ASWING.IITOT[1],ASWING.IPOINT[1]), ASWING.Q0)
@@ -590,15 +619,8 @@ function nodeset(intervals::AbstractArray{<:AbstractArray{<:Integer, 1},1})
     return nothing
 end
 
-"""
-    getstaticmargin(ipnt::Integer=1)
+function getstabilityderivatives(ipnt::Integer=1)
 
-    Returns quasi-steady static margin, rigidized static margin, and a solution
-    failure flag.  Assumes constraints are set up for trimmed flight and follows
-    the instructions in derivative_calc.txt. This function performs irreversible
-    changes so you will need to re-input the geometry afterwards.
-"""
-function getstaticmargin(ipnt::Integer=1)
     # no convergence failures yet
     fail = false
 
@@ -624,10 +646,7 @@ function getstaticmargin(ipnt::Integer=1)
     end
 
     # Get stability matrices using center of gravity as moment reference
-    stabderivs_qs = getstabilityderivatives(ipnt, solution_qs.pnt_param.position_aircraft_cg)
-
-    # calculate static margin
-    sm_qs = -stabderivs_qs.Cma/stabderivs_qs.CLa*100
+    stabderivs_qs = stabilityderivatives(ipnt, momref=solution_qs.pnt_param.position_aircraft_cg)
 
     # rigidize aircraft at current deformed shape
     freeze(ipnt)
@@ -641,7 +660,26 @@ function getstaticmargin(ipnt::Integer=1)
     end
 
     # Get stability matrices using center of gravity as moment reference
-    stabderivs_rigid = getstabilityderivatives(ipnt, solution_rigid.pnt_param.position_aircraft_cg)
+    stabderivs_rigid = stabilityderivatives(ipnt, momref=solution_rigid.pnt_param.position_aircraft_cg)
+
+    return stabderivs_qs, stabderivs_rigid, fail
+end #getstabilityderivatives
+
+
+"""
+    getstaticmargin(ipnt::Integer=1)
+
+    Returns quasi-steady static margin, rigidized static margin, and a solution
+    failure flag.  Assumes constraints are set up for trimmed flight and follows
+    the instructions in derivative_calc.txt. This function performs irreversible
+    changes so you will need to re-input the geometry afterwards.
+"""
+function getstaticmargin(ipnt::Integer=1)
+
+    stabderivs_qs, stabderivs_rigid, fail = getstabilityderivatives(ipnt)
+
+    # calculate static margin
+    sm_qs = -stabderivs_qs.Cma/stabderivs_qs.CLa*100
 
     # calculate static margin
     sm_rigid = -stabderivs_rigid.Cma/stabderivs_rigid.CLa*100

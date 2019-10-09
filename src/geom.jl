@@ -1,7 +1,7 @@
 # defines geometry used in ASWING
 
 # Dictionary of pointers to beam values
-beamvarval = Dict{String,Int}(strip(VARS[i])=>i for i = 1:JBTOT)
+const beamvarval = Dict{String,Int}(strip(VARS[i])=>i for i = 1:JBTOT)
 
 """
     Constants(;
@@ -532,189 +532,6 @@ struct SpanwiseVariables{R<:Real}
     dCDdF20::Array{R,2}
 end
 
-function SpanwiseVariables(;
-    x::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    y::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    z::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    twist::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    EIcc::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    EIcn::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    EInn::AbstractArray{<:Real,2} = Array{Float64}(undef, 0, 2),
-    EIcs::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    EIsn::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    GJ::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    EA::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    GKc::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    GKn::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    mgcc::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    mgnn::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    mg::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Ccg::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Ncg::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Dmgcc::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Dmgnn::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Dmg::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    DCcg::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    DNcg::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Cea::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Nea::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Cta::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Nta::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    tdeps::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    tdgam::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Cshell::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Nshell::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Atshell::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    radius::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Cdf::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Cdp::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    chord::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Xax::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    alpha::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    Cm::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    CLmax::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    CLmin::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLda::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF::AbstractArray{<:AbstractArray{<:Real,2},1}=Array{Array{Float64,2},1}(undef, 20),
-    dCMdF::AbstractArray{<:AbstractArray{<:Real,2},1}=Array{Array{Float64,2},1}(undef, 20),
-    dCDdF::AbstractArray{<:AbstractArray{<:Real,2},1}=Array{Array{Float64,2},1}(undef, 20),
-    dCLdF1::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF2::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF3::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF4::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF5::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF6::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF7::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF8::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF9::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF10::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF11::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF12::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF13::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF14::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF15::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF16::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF17::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF18::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF19::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCLdF20::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF1::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF2::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF3::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF4::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF5::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF6::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF7::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF8::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF9::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF10::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF11::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF12::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF13::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF14::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF15::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF16::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF17::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF18::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF19::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCMdF20::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF1::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF2::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF3::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF4::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF5::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF6::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF7::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF8::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF9::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF10::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF11::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF12::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF13::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF14::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF15::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF16::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF17::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF18::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF19::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2),
-    dCDdF20::AbstractArray{<:Real,2}=Array{Float64}(undef, 0, 2))
-
-    dCLdF1 = isempty(dCLdF1) && isassigned(dCLdF, 1) ? dCLdF[1] : dCLdF1
-    dCLdF2 = isempty(dCLdF2) && isassigned(dCLdF, 2) ? dCLdF[2] : dCLdF2
-    dCLdF3 = isempty(dCLdF3) && isassigned(dCLdF, 3) ? dCLdF[3] : dCLdF3
-    dCLdF4 = isempty(dCLdF4) && isassigned(dCLdF, 4) ? dCLdF[4] : dCLdF4
-    dCLdF5 = isempty(dCLdF5) && isassigned(dCLdF, 5) ? dCLdF[5] : dCLdF5
-    dCLdF6 = isempty(dCLdF6) && isassigned(dCLdF, 6) ? dCLdF[6] : dCLdF6
-    dCLdF7 = isempty(dCLdF7) && isassigned(dCLdF, 7) ? dCLdF[7] : dCLdF7
-    dCLdF8 = isempty(dCLdF8) && isassigned(dCLdF, 8) ? dCLdF[8] : dCLdF8
-    dCLdF9 = isempty(dCLdF9) && isassigned(dCLdF, 9) ? dCLdF[9] : dCLdF9
-    dCLdF10 = isempty(dCLdF10) && isassigned(dCLdF, 10) ? dCLdF[10] : dCLdF10
-    dCLdF11 = isempty(dCLdF11) && isassigned(dCLdF, 11) ? dCLdF[11] : dCLdF11
-    dCLdF12 = isempty(dCLdF12) && isassigned(dCLdF, 12) ? dCLdF[12] : dCLdF12
-    dCLdF13 = isempty(dCLdF13) && isassigned(dCLdF, 13) ? dCLdF[13] : dCLdF13
-    dCLdF14 = isempty(dCLdF14) && isassigned(dCLdF, 14) ? dCLdF[14] : dCLdF14
-    dCLdF15 = isempty(dCLdF15) && isassigned(dCLdF, 15) ? dCLdF[15] : dCLdF15
-    dCLdF16 = isempty(dCLdF16) && isassigned(dCLdF, 16) ? dCLdF[16] : dCLdF16
-    dCLdF17 = isempty(dCLdF17) && isassigned(dCLdF, 17) ? dCLdF[17] : dCLdF17
-    dCLdF18 = isempty(dCLdF18) && isassigned(dCLdF, 18) ? dCLdF[18] : dCLdF18
-    dCLdF19 = isempty(dCLdF19) && isassigned(dCLdF, 19) ? dCLdF[19] : dCLdF19
-    dCLdF20 = isempty(dCLdF20) && isassigned(dCLdF, 20) ? dCLdF[20] : dCLdF20
-
-    dCMdF1 = isempty(dCMdF1) && isassigned(dCMdF, 1) ? dCMdF[1] : dCMdF1
-    dCMdF2 = isempty(dCMdF2) && isassigned(dCMdF, 2) ? dCMdF[2] : dCMdF2
-    dCMdF3 = isempty(dCMdF3) && isassigned(dCMdF, 3) ? dCMdF[3] : dCMdF3
-    dCMdF4 = isempty(dCMdF4) && isassigned(dCMdF, 4) ? dCMdF[4] : dCMdF4
-    dCMdF5 = isempty(dCMdF5) && isassigned(dCMdF, 5) ? dCMdF[5] : dCMdF5
-    dCMdF6 = isempty(dCMdF6) && isassigned(dCMdF, 6) ? dCMdF[6] : dCMdF6
-    dCMdF7 = isempty(dCMdF7) && isassigned(dCMdF, 7) ? dCMdF[7] : dCMdF7
-    dCMdF8 = isempty(dCMdF8) && isassigned(dCMdF, 8) ? dCMdF[8] : dCMdF8
-    dCMdF9 = isempty(dCMdF9) && isassigned(dCMdF, 9) ? dCMdF[9] : dCMdF9
-    dCMdF10 = isempty(dCMdF10) && isassigned(dCMdF, 10) ? dCMdF[10] : dCMdF10
-    dCMdF11 = isempty(dCMdF11) && isassigned(dCMdF, 11) ? dCMdF[11] : dCMdF11
-    dCMdF12 = isempty(dCMdF12) && isassigned(dCMdF, 12) ? dCMdF[12] : dCMdF12
-    dCMdF13 = isempty(dCMdF13) && isassigned(dCMdF, 13) ? dCMdF[13] : dCMdF13
-    dCMdF14 = isempty(dCMdF14) && isassigned(dCMdF, 14) ? dCMdF[14] : dCMdF14
-    dCMdF15 = isempty(dCMdF15) && isassigned(dCMdF, 15) ? dCMdF[15] : dCMdF15
-    dCMdF16 = isempty(dCMdF16) && isassigned(dCMdF, 16) ? dCMdF[16] : dCMdF16
-    dCMdF17 = isempty(dCMdF17) && isassigned(dCMdF, 17) ? dCMdF[17] : dCMdF17
-    dCMdF18 = isempty(dCMdF18) && isassigned(dCMdF, 18) ? dCMdF[18] : dCMdF18
-    dCMdF19 = isempty(dCMdF19) && isassigned(dCMdF, 19) ? dCMdF[19] : dCMdF19
-    dCMdF20 = isempty(dCMdF20) && isassigned(dCMdF, 20) ? dCMdF[20] : dCMdF20
-
-    dCDdF1 = isempty(dCDdF1) && isassigned(dCDdF, 1) ? dCDdF[1] : dCDdF1
-    dCDdF2 = isempty(dCDdF2) && isassigned(dCDdF, 2) ? dCDdF[2] : dCDdF2
-    dCDdF3 = isempty(dCDdF3) && isassigned(dCDdF, 3) ? dCDdF[3] : dCDdF3
-    dCDdF4 = isempty(dCDdF4) && isassigned(dCDdF, 4) ? dCDdF[4] : dCDdF4
-    dCDdF5 = isempty(dCDdF5) && isassigned(dCDdF, 5) ? dCDdF[5] : dCDdF5
-    dCDdF6 = isempty(dCDdF6) && isassigned(dCDdF, 6) ? dCDdF[6] : dCDdF6
-    dCDdF7 = isempty(dCDdF7) && isassigned(dCDdF, 7) ? dCDdF[7] : dCDdF7
-    dCDdF8 = isempty(dCDdF8) && isassigned(dCDdF, 8) ? dCDdF[8] : dCDdF8
-    dCDdF9 = isempty(dCDdF9) && isassigned(dCDdF, 9) ? dCDdF[9] : dCDdF9
-    dCDdF10 = isempty(dCDdF10) && isassigned(dCDdF, 10) ? dCDdF[10] : dCDdF10
-    dCDdF11 = isempty(dCDdF11) && isassigned(dCDdF, 11) ? dCDdF[11] : dCDdF11
-    dCDdF12 = isempty(dCDdF12) && isassigned(dCDdF, 12) ? dCDdF[12] : dCDdF12
-    dCDdF13 = isempty(dCDdF13) && isassigned(dCDdF, 13) ? dCDdF[13] : dCDdF13
-    dCDdF14 = isempty(dCDdF14) && isassigned(dCDdF, 14) ? dCDdF[14] : dCDdF14
-    dCDdF15 = isempty(dCDdF15) && isassigned(dCDdF, 15) ? dCDdF[15] : dCDdF15
-    dCDdF16 = isempty(dCDdF16) && isassigned(dCDdF, 16) ? dCDdF[16] : dCDdF16
-    dCDdF17 = isempty(dCDdF17) && isassigned(dCDdF, 17) ? dCDdF[17] : dCDdF17
-    dCDdF18 = isempty(dCDdF18) && isassigned(dCDdF, 18) ? dCDdF[18] : dCDdF18
-    dCDdF19 = isempty(dCDdF19) && isassigned(dCDdF, 19) ? dCDdF[19] : dCDdF19
-    dCDdF20 = isempty(dCDdF20) && isassigned(dCDdF, 20) ? dCDdF[20] : dCDdF20
-
-    SpanwiseVariables{Float64}(x, y, z, twist, EIcc, EInn, EIcn, EIcs, EIsn, GJ, EA, GKc,
-        GKn, mgcc, mgnn, mg, Ccg, Ncg, Dmgcc, Dmgnn, Dmg, DCcg, DNcg, Cea, Nea,
-        Cta, Nta, tdeps, tdgam, Cshell, Nshell, Atshell, radius, Cdf, Cdp,
-        chord, Xax, alpha, Cm, CLmax, CLmin, dCLda, dCLdF1, dCLdF2, dCLdF3,
-        dCLdF4, dCLdF5, dCLdF6, dCLdF7, dCLdF8, dCLdF9, dCLdF10, dCLdF11,
-        dCLdF12, dCLdF13, dCLdF14, dCLdF15, dCLdF16, dCLdF17, dCLdF18, dCLdF19,
-        dCLdF20, dCMdF1, dCMdF2, dCMdF3, dCMdF4, dCMdF5, dCMdF6, dCMdF7, dCMdF8,
-        dCMdF9, dCMdF10, dCMdF11, dCMdF12, dCMdF13, dCMdF14, dCMdF15, dCMdF16,
-        dCMdF17, dCMdF18, dCMdF19, dCMdF20, dCDdF1, dCDdF2, dCDdF3, dCDdF4,
-        dCDdF5, dCDdF6, dCDdF7, dCDdF8, dCDdF9, dCDdF10, dCDdF11, dCDdF12,
-        dCDdF13, dCDdF14, dCDdF15, dCDdF16, dCDdF17, dCDdF18, dCDdF19, dCDdF20)
-end
-
 function (::Type{SpanwiseVariables{R}})(;
     x::AbstractArray{<:Real,2} = Array{R}(undef, 0, 2),
     y::AbstractArray{<:Real,2} = Array{R}(undef, 0, 2),
@@ -897,6 +714,8 @@ function (::Type{SpanwiseVariables{R}})(;
         dCDdF5, dCDdF6, dCDdF7, dCDdF8, dCDdF9, dCDdF10, dCDdF11, dCDdF12,
         dCDdF13, dCDdF14, dCDdF15, dCDdF16, dCDdF17, dCDdF18, dCDdF19, dCDdF20)
 end
+
+SpanwiseVariables(kwargs...) = SpanwiseVariables{Float64}(kwargs...)
 
 """
     Beam(;number::Integer = 0, physical_index::Integer = 0, name::String = "",

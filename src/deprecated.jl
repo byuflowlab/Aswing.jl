@@ -12,11 +12,11 @@ aswbeam = Beam{Float64}
 aswgeominput = Configuration{Float64}
 
 aswconstraints = Constraints
-aswparameters = Parameters{Float64}
-operatingpoint = OperatingPoint{Float64}
+aswparameters = Parameters
+operatingpoint = OperatingPoint
 
-stabderivs_s = StabilityDerivatives{Float64}
-solutionparameters = SolutionParameters{Float64}
-solutiongeometry = SolutionGeometry{Float64}
-solutionspanwise = SolutionSpanwise{Float64}
-solution = Solution{Float64}
+stabderivs_s = StabilityDerivatives
+solutionparameters = SolutionParameters
+solutiongeometry = SolutionGeometry
+solutionspanwise = SolutionSpanwise
+solution = Solution
